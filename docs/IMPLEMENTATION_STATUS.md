@@ -30,6 +30,7 @@
 - MR/Pipeline/Push Webhook 的 GitLab API SHA Contract 验证；
 - Helm PostgreSQL 模式与迁移 Init Container；
 - Docker Desktop Kubernetes PostgreSQL 实验部署、Pod 重启持久化和数据库故障 Readiness；
+- Stage C 精确提交镜像的 Docker Desktop Kubernetes RBAC、产品主链、Webhook 去重和 Pod 重建持久化 E2E；
 - Go Test、Race、Vet、Build。
 
 ## 已提供代码或配置，但未连接真实外部系统验证

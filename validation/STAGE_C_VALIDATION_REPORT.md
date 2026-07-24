@@ -81,8 +81,52 @@ OIDC/GitLab values 已完成 Helm template、`kubectl --dry-run=client` 和 Kube
 Server dry-run。第一次 Server dry-run 因模板默认 10 GiB 与现有 1 GiB PVC 不一致而被
 集群正确拒绝；改为现有 PVC 的 1 GiB 后通过，期间没有修改资源。
 
-精确 Git Commit 镜像构建、Docker Desktop Kubernetes 升级/API E2E、GitHub 分支推送和
-CI Read-back 仍待本轮后续执行，完成后回填。
+精确镜像和 Kubernetes E2E 结果如下；GitHub 分支推送与 CI Read-back 在报告提交后执行。
+
+### 3.1 精确提交镜像与 Kubernetes
+
+最终运行时提交：
+
+```text
+50b2d5acf978663dd1af97bcf9d87cb11af683e3
+```
+
+本地不可变 Image ID：
+
+```text
+sha256:faf9c976191d51994102ee64136c1d464b3d5afdc94c9c6b0014aef550bb24e7
+```
+
+镜像 OCI Label 回读：
+
+```text
+org.opencontainers.image.revision=50b2d5acf978663dd1af97bcf9d87cb11af683e3
+org.opencontainers.image.version=2.2.0-stage-c-contract
+```
+
+Docker Desktop Kubernetes 最终 Helm revision 10，Chart/App 0.4.0。Migration Init
+Container exit 0，API Pod Ready，两个容器状态均回读到上述同一 Image ID。
+
+### 3.2 Kubernetes API E2E
+
+在显式 `development_headers` 隔离模式执行：
+
+- `/healthz` 为 `ok`，`/readyz` 为 `ready`；
+- 无身份查询返回 401，无所需角色返回 403；
+- 跨站修改请求返回 `CSRF_REJECTED`；
+- 上传 Markdown，提取 5 条决策；
+- 由产品经理确认、不同的批准人批准全部 5 条决策；
+- 同一身份自我批准返回 409；
+- 生成工程包 `erp_7d738f4916cfd93ebbd5b2db979001ae`；
+- 工程包 Digest 为
+  `sha256:a7a151ea26390ca9eb3e29b7c68cf0c421b0a6296f3eca92addb5749cc5abbdc`；
+- Bundle 生成固定分支和 2 个 Docs-as-Code 文件；
+- Webhook 首次写入 `duplicate=false`，相同 UUID 再投递为 `duplicate=true`，Record ID
+  和 Payload Digest 完全相同；
+- Pod 重建后同一工程包仍可读取，Webhook 仍命中同一去重记录；
+- 最终 0.4.0 镜像再次通过健康、就绪和持久化工程包 Smoke Test。
+
+这是 Docker Desktop 单节点 Kubernetes 实验，不是企业 OIDC 或真实 GitLab Provider Truth。
 
 ## 4. 依赖与漏洞扫描
 

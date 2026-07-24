@@ -46,6 +46,8 @@ type InboxStore interface {
 	PutIfAbsent(record InboxRecord) (stored bool, existing InboxRecord, err error)
 	Get(id string) (InboxRecord, error)
 	List(status InboxStatus, limit int) ([]InboxRecord, error)
+	ClaimNext(now time.Time, maxAttempts int) (InboxRecord, bool, error)
+	RequeueStale(before time.Time, maxAttempts int) (int, error)
 	Update(record InboxRecord) error
 }
 
@@ -109,6 +111,57 @@ func (m *MemoryInbox) Update(record InboxRecord) error {
 	return nil
 }
 
+func (m *MemoryInbox) ClaimNext(now time.Time, maxAttempts int) (InboxRecord, bool, error) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	if maxAttempts <= 0 {
+		maxAttempts = 5
+	}
+	var selected *InboxRecord
+	for _, value := range m.records {
+		record := value
+		if (record.Status != InboxPending && record.Status != InboxFailed) || record.Attempts >= maxAttempts {
+			continue
+		}
+		if selected == nil || record.ReceivedAt.Before(selected.ReceivedAt) {
+			selected = &record
+		}
+	}
+	if selected == nil {
+		return InboxRecord{}, false, nil
+	}
+	selected.Status = InboxProcessing
+	selected.Attempts++
+	selected.LastError = ""
+	selected.UpdatedAt = now.UTC()
+	m.records[selected.ID] = cloneInboxRecord(*selected)
+	return cloneInboxRecord(*selected), true, nil
+}
+
+func (m *MemoryInbox) RequeueStale(before time.Time, maxAttempts int) (int, error) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	if maxAttempts <= 0 {
+		maxAttempts = 5
+	}
+	count := 0
+	for id, record := range m.records {
+		if record.Status != InboxProcessing || !record.UpdatedAt.Before(before) {
+			continue
+		}
+		record.Status = InboxFailed
+		if record.Attempts >= maxAttempts {
+			record.LastError = "处理租约超时且已达到最大尝试次数"
+		} else {
+			record.LastError = "处理租约超时，等待只读对账重试"
+		}
+		record.UpdatedAt = before.UTC()
+		m.records[id] = cloneInboxRecord(record)
+		count++
+	}
+	return count, nil
+}
+
 // FileInbox 使用原子 JSON 快照实现单节点持久化，便于在没有 PostgreSQL 的环境验证 Webhook 语义。
 // 生产多副本必须替换为 PostgreSQL Inbox，并对去重键建立唯一约束。
 type FileInbox struct {
@@ -163,6 +216,36 @@ func (f *FileInbox) Update(record InboxRecord) error {
 		return err
 	}
 	return nil
+}
+
+func (f *FileInbox) ClaimNext(now time.Time, maxAttempts int) (InboxRecord, bool, error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	before := f.snapshot()
+	record, claimed, err := f.mem.ClaimNext(now, maxAttempts)
+	if err != nil || !claimed {
+		return record, claimed, err
+	}
+	if err := f.persist(); err != nil {
+		f.restore(before)
+		return InboxRecord{}, false, err
+	}
+	return record, true, nil
+}
+
+func (f *FileInbox) RequeueStale(beforeTime time.Time, maxAttempts int) (int, error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	before := f.snapshot()
+	count, err := f.mem.RequeueStale(beforeTime, maxAttempts)
+	if err != nil || count == 0 {
+		return count, err
+	}
+	if err := f.persist(); err != nil {
+		f.restore(before)
+		return 0, err
+	}
+	return count, nil
 }
 
 func (f *FileInbox) snapshot() []InboxRecord {

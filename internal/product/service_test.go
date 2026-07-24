@@ -118,3 +118,32 @@ func TestApprovalRequiresIndependentActor(t *testing.T) {
 		t.Fatal("确认人不应批准自己的决策")
 	}
 }
+
+func TestEngineeringPackageFailsClosedWhenReferencedDecisionChanges(t *testing.T) {
+	repo := NewMemoryRepository()
+	svc := NewService(repo, RealClock{})
+	ctx := context.Background()
+	decisions := []ProductDecision{
+		{ID: "req", TenantID: "t1", ProjectID: "p1", Kind: DecisionRequirement, Status: DecisionApproved, CanonicalDigest: "sha256:req", Version: 1},
+		{ID: "acc", TenantID: "t1", ProjectID: "p1", Kind: DecisionAcceptanceCriterion, Status: DecisionApproved, CanonicalDigest: "sha256:acc", Version: 1},
+		{ID: "out", TenantID: "t1", ProjectID: "p1", Kind: DecisionOutcomeContract, Status: DecisionApproved, CanonicalDigest: "sha256:out", Version: 1},
+	}
+	for _, item := range decisions {
+		if err := repo.SaveDecision(ctx, item); err != nil {
+			t.Fatal(err)
+		}
+	}
+	pkg, err := svc.BuildEngineeringPackage(ctx, "t1", "p1", "delivery-manager")
+	if err != nil {
+		t.Fatal(err)
+	}
+	changed := decisions[0]
+	changed.CanonicalDigest = "sha256:changed"
+	changed.Version++
+	if err := repo.UpdateDecision(ctx, changed, 1); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := svc.GetPackageDecisions(ctx, "t1", pkg); err == nil {
+		t.Fatal("引用决策变化后必须拒绝工程包交付")
+	}
+}

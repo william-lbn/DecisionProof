@@ -13,7 +13,7 @@ variables:
   GOCACHE: "$CI_PROJECT_DIR/.cache/gobuild"
 
 .go_job:
-  image: golang:1.23.12-bookworm@sha256:167053a2bb901972bf2c1611f8f52c44d5fe7e762e5cab213708d82c421614db
+  image: golang:1.26.5-bookworm@sha256:1ecb7edf62a0408027bd5729dfd6b1b8766e578e8df93995b225dfd0944eb651
   cache:
     key: "go-${CI_COMMIT_REF_SLUG}"
     paths:

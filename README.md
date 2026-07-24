@@ -17,7 +17,9 @@ Go Module：`github.com/william-lbn/DecisionProof`
 - Engineering Readiness Package；
 - 模型无关 `Extractor` 和 HTTP JSON AI Provider；
 - GitLab REST Client、读重试、写不盲目重试；
-- GitLab Webhook HMAC/Legacy Token 校验、单节点持久化 Inbox 和重复事件去重；
+- OIDC Bearer 验签、开发身份显式隔离、产品/GitLab API RBAC；
+- GitLab Project Onboarding、工程包到 Issue/Branch/Commit/Draft MR 的幂等执行与 Read-back；
+- GitLab Webhook HMAC/Legacy Token、PostgreSQL Inbox、租约 Reconciler 和 API SHA 对账；
 - Prometheus Instant Query Adapter；
 - Codex/OpenHands/企业 Agent 可复用的 Task/Event/Result 协议；
 - 人工创建、修订、否决和职责分离的产品决策；
@@ -33,7 +35,7 @@ Go Module：`github.com/william-lbn/DecisionProof`
 
 ## 本地运行
 
-要求 Go 1.23+。
+要求 Go 1.26.5；CI 和容器构建均固定到 Go 1.26.5。
 
 ```bash
 make verify
@@ -48,8 +50,11 @@ http://localhost:8080/app/
 
 PostgreSQL 实验运行与 Kubernetes 部署见
 [`docs/12_实验部署与使用手册.md`](docs/12_实验部署与使用手册.md)。
+OIDC 和 GitLab 交付配置/调用见
+[`docs/13_身份与GitLab交付使用手册.md`](docs/13_身份与GitLab交付使用手册.md)。
 
-开发工作台使用以下本地身份头，生产环境必须替换为 GitLab OAuth/OIDC：
+开发工作台使用以下本地身份头；生产 API 必须使用 OIDC Bearer，且当前 UI 的
+Authorization Code + PKCE/BFF 登录仍未实现：
 
 ```text
 X-Tenant-ID: tenant-demo
@@ -109,14 +114,14 @@ docs                     产品、架构、研发、验证和演进文档
 12. [`实现状态`](docs/IMPLEMENTATION_STATUS.md)
 13. [`全面审计与端到端实施计划`](docs/11_全面审计与端到端实施计划.md)
 14. [`PostgreSQL 实验部署与使用手册`](docs/12_实验部署与使用手册.md)
+15. [`身份与 GitLab 交付使用手册`](docs/13_身份与GitLab交付使用手册.md)
 
 ## 生产主线待实现
 
 优先顺序：
 
 ```text
-GitLab OAuth
-→ GitLab Webhook Reconciler
+真实企业 IdP / Disposable GitLab Truth Test
 → Temporal Workflow
 → K8s Agent Runtime（Codex/OpenHands）
 → GitLab CI 证据、SBOM、签名、Provenance

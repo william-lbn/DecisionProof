@@ -27,5 +27,26 @@ spec:
       ports:
         - {protocol: TCP, port: 5432}
     {{- end }}
-    # 真实环境必须把 GitLab、模型服务、对象存储和数据库出口收敛到明确 CIDR/Namespace。
+    {{- if and (eq .Values.auth.mode "oidc_bearer") .Values.auth.oidc.egressCIDRs }}
+    # OIDC Discovery 和 JWKS 回读只能访问运维显式允许的 IdP 网段。
+    - to:
+        {{- range .Values.auth.oidc.egressCIDRs }}
+        - ipBlock:
+            cidr: {{ . | quote }}
+        {{- end }}
+      ports:
+        - protocol: TCP
+          port: {{ .Values.auth.oidc.port }}
+    {{- end }}
+    {{- if and .Values.gitlab.api.existingSecret .Values.gitlab.api.egressCIDRs }}
+    - to:
+        {{- range .Values.gitlab.api.egressCIDRs }}
+        - ipBlock:
+            cidr: {{ . | quote }}
+        {{- end }}
+      ports:
+        - protocol: TCP
+          port: {{ .Values.gitlab.api.port }}
+    {{- end }}
+    # 真实环境必须把 IdP、GitLab、模型服务、对象存储和数据库出口收敛到明确 CIDR/Namespace。
 {{- end }}

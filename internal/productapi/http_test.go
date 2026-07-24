@@ -173,4 +173,24 @@ func callDecisionTransition(t *testing.T, handler http.Handler, id, operation, a
 func setIdentity(req *http.Request, actor string) {
 	req.Header.Set("X-Tenant-ID", "tenant-demo")
 	req.Header.Set("X-Actor-ID", actor)
+	switch actor {
+	case "product-manager", "security-reviewer":
+		req.Header.Set("X-Actor-Roles", "product_manager")
+	case "product-owner":
+		req.Header.Set("X-Actor-Roles", "product_approver,delivery_manager")
+	default:
+		req.Header.Set("X-Actor-Roles", "auditor")
+	}
+}
+
+func TestProductAPIRBACFailsClosed(t *testing.T) {
+	handler := NewHTTPHandler(product.NewService(product.NewMemoryRepository(), product.RealClock{}), t.TempDir())
+	req := httptest.NewRequest(http.MethodGet, "/product/v1/decisions?project_id=project-demo", nil)
+	req.Header.Set("X-Tenant-ID", "tenant-demo")
+	req.Header.Set("X-Actor-ID", "unprivileged-user")
+	rec := httptest.NewRecorder()
+	handler.ServeHTTP(rec, req)
+	if rec.Code != http.StatusForbidden {
+		t.Fatalf("无角色身份必须返回 403，实际 %d: %s", rec.Code, rec.Body.String())
+	}
 }

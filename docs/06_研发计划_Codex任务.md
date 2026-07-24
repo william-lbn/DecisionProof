@@ -16,13 +16,14 @@ Codex 每次只实现一个可独立验收任务。禁止一次性重写整个�
 - 产品 Repository PostgreSQL 实现（已完成）；
 - Migration CLI（已完成）；
 - PostgreSQL Webhook Inbox、RLS Truth Test 和 Readiness（已完成）；
-- GitLab OAuth/OIDC；
-- Session、CSRF、RBAC；
+- OIDC Bearer（本地密码学集成已完成，企业 IdP Truth 待执行）；
+- 同站修改请求门禁和 RBAC（已完成）；浏览器 Session/PKCE/BFF（待实现）；
 
 ### M2 GitLab Truth Harness
 
-- Project Onboarding；
-- Webhook Inbox/Reconciler；
+- Project Onboarding（Contract 已完成，真实 GitLab 待执行）；
+- Webhook Inbox/Reconciler（单元与 PostgreSQL Truth 已完成，真实乱序 Provider 待执行）；
+- Issue/Branch/Commit/Draft MR 幂等交付（Contract 已完成）；
 - Disposable Project；
 - Branch/MR/Pipeline/Job/Registry；
 - 429、超时、乱序、丢失验证。

@@ -37,6 +37,9 @@ func NewHTTPHandler(service *product.Service, objectDir string, extractor ...pro
 func (h *HTTPHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	path := strings.Trim(strings.TrimPrefix(r.URL.Path, "/product/v1/"), "/")
 	parts := strings.Split(path, "/")
+	if required, known := requiredRoles(path, parts, r.Method); known && !authorizeProductRequest(w, r, required...) {
+		return
+	}
 	switch {
 	case path == "documents" && r.Method == http.MethodPost:
 		h.upload(w, r)
@@ -61,6 +64,53 @@ func (h *HTTPHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	default:
 		writeJSON(w, http.StatusNotFound, map[string]any{"code": "NOT_FOUND", "message": "产品 API 不存在"})
 	}
+}
+
+// requiredRoles 把产品动作映射到最小职责。读取允许审计角色，
+// 修改、批准与形成工程基线分别属于不同职责，服务层仍继续检查作者不能自批。
+func requiredRoles(path string, parts []string, method string) ([]string, bool) {
+	switch {
+	case path == "documents" && method == http.MethodPost:
+		return []string{"product_manager"}, true
+	case len(parts) == 3 && parts[0] == "documents" && parts[2] == "extract" && method == http.MethodPost:
+		return []string{"product_manager"}, true
+	case path == "decisions" && method == http.MethodGet:
+		return []string{"product_manager", "product_approver", "delivery_manager", "auditor"}, true
+	case path == "decisions" && method == http.MethodPost:
+		return []string{"product_manager"}, true
+	case len(parts) == 2 && parts[0] == "decisions" && method == http.MethodPatch:
+		return []string{"product_manager"}, true
+	case len(parts) == 3 && parts[0] == "decisions" && parts[2] == "confirm" && method == http.MethodPost:
+		return []string{"product_manager"}, true
+	case len(parts) == 3 && parts[0] == "decisions" && (parts[2] == "approve" || parts[2] == "reject") && method == http.MethodPost:
+		return []string{"product_approver"}, true
+	case path == "engineering-packages" && method == http.MethodPost:
+		return []string{"delivery_manager"}, true
+	case len(parts) == 3 && parts[0] == "engineering-packages" && parts[2] == "gitlab-bundle" && method == http.MethodGet:
+		return []string{"delivery_manager", "auditor"}, true
+	default:
+		return nil, false
+	}
+}
+
+func authorizeProductRequest(w http.ResponseWriter, r *http.Request, required ...string) bool {
+	if strings.TrimSpace(r.Header.Get("X-Tenant-ID")) == "" || strings.TrimSpace(r.Header.Get("X-Actor-ID")) == "" {
+		writeErr(w, http.StatusUnauthorized, errors.New("缺少可信身份"))
+		return false
+	}
+	granted := map[string]struct{}{}
+	for _, role := range strings.Split(r.Header.Get("X-Actor-Roles"), ",") {
+		if role = strings.TrimSpace(role); role != "" {
+			granted[role] = struct{}{}
+		}
+	}
+	for _, role := range required {
+		if _, ok := granted[role]; ok {
+			return true
+		}
+	}
+	writeErr(w, http.StatusForbidden, fmt.Errorf("当前身份缺少所需角色 %s", strings.Join(required, " 或 ")))
+	return false
 }
 
 func identity(r *http.Request) (string, string, error) {

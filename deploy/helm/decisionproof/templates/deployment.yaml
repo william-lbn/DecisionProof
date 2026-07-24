@@ -53,6 +53,20 @@ spec:
               value: production
             - name: SDLC_LISTEN_ADDR
               value: :8080
+            - name: SDLC_AUTH_MODE
+              value: {{ .Values.auth.mode | quote }}
+            - name: SDLC_ALLOW_INSECURE_DEV_AUTH
+              value: {{ .Values.auth.allowInsecureDevelopmentHeaders | quote }}
+            {{- if eq .Values.auth.mode "oidc_bearer" }}
+            - name: SDLC_OIDC_ISSUER_URL
+              value: {{ required "auth.mode=oidc_bearer 时 auth.oidc.issuerURL 不能为空" .Values.auth.oidc.issuerURL | quote }}
+            - name: SDLC_OIDC_AUDIENCE
+              value: {{ required "auth.mode=oidc_bearer 时 auth.oidc.audience 不能为空" .Values.auth.oidc.audience | quote }}
+            - name: SDLC_OIDC_TENANT_CLAIM
+              value: {{ .Values.auth.oidc.tenantClaim | quote }}
+            - name: SDLC_OIDC_ROLES_CLAIM
+              value: {{ .Values.auth.oidc.rolesClaim | quote }}
+            {{- end }}
             - name: SDLC_DATA_FILE
               value: /var/lib/decisionproof/core.json
             - name: SDLC_PRODUCT_DATA_FILE
@@ -83,6 +97,19 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.existingGitLabWebhookSecret }}
                   key: signing-secret
+            {{- end }}
+            {{- if .Values.gitlab.api.existingSecret }}
+            - name: SDLC_GITLAB_BASE_URL
+              value: {{ required "启用 GitLab Runtime 时 gitlab.api.baseURL 不能为空" .Values.gitlab.api.baseURL | quote }}
+            - name: SDLC_GITLAB_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.gitlab.api.existingSecret }}
+                  key: {{ .Values.gitlab.api.tokenKey }}
+            - name: SDLC_GITLAB_API_AUTH_MODE
+              value: {{ .Values.gitlab.api.authMode | quote }}
+            - name: SDLC_GITLAB_API_SECRET_REFERENCE
+              value: {{ .Values.gitlab.api.secretReference | quote }}
             {{- end }}
           readinessProbe:
             httpGet: {path: /readyz, port: http}

@@ -8,6 +8,19 @@ image:
 service:
   port: 8080
 
+auth:
+  # Chart 只用于隔离实验，因此显式开启开发头；生产必须改为 oidc_bearer 并关闭不安全开关。
+  mode: development_headers
+  allowInsecureDevelopmentHeaders: true
+  oidc:
+    issuerURL: ""
+    audience: ""
+    tenantClaim: tenant_id
+    rolesClaim: roles
+    # NetworkPolicy 启用时必须填写 IdP/JWKS 出口 CIDR。
+    egressCIDRs: []
+    port: 443
+
 storage:
   # file 仅用于单节点演示；postgres 会接通核心和产品元数据，但上传对象仍在本地 PVC。
   mode: file
@@ -36,6 +49,15 @@ existingGitLabWebhookSecret: ""
 gitlab:
   tenantID: ""
   integrationID: gitlab-default
+  api:
+    baseURL: ""
+    existingSecret: ""
+    tokenKey: api-token
+    authMode: private_token
+    secretReference: gitlab-primary
+    # 启用 NetworkPolicy 时必须填写 GitLab 出口 CIDR；域名不能直接用于标准 NetworkPolicy。
+    egressCIDRs: []
+    port: 443
 
 resources:
   requests:

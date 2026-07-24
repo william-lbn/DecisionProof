@@ -39,12 +39,22 @@ func TestPostgresInboxTruth(t *testing.T) {
 	if err != nil || stored || duplicate.ID != first.ID {
 		t.Fatalf("重复事件去重失败: stored=%v record=%#v err=%v", stored, duplicate, err)
 	}
-	if err := MarkProcessing(inbox, first, now.Add(time.Second)); err != nil {
-		t.Fatal(err)
+	claimed, ok, err := inbox.ClaimNext(now.Add(time.Second), 2)
+	if err != nil || !ok || claimed.ID != first.ID || claimed.Status != InboxProcessing || claimed.Attempts != 1 {
+		t.Fatalf("原子领取失败: claimed=%v record=%#v err=%v", ok, claimed, err)
 	}
-	processing, err := inbox.List(InboxProcessing, 10)
-	if err != nil || len(processing) != 1 || processing[0].Attempts != 1 {
-		t.Fatalf("处理状态读取失败: records=%#v err=%v", processing, err)
+	if count, err := inbox.RequeueStale(now.Add(2*time.Second), 2); err != nil || count != 1 {
+		t.Fatalf("租约回收失败: count=%d err=%v", count, err)
+	}
+	claimed, ok, err = inbox.ClaimNext(now.Add(3*time.Second), 2)
+	if err != nil || !ok || claimed.Attempts != 2 {
+		t.Fatalf("失败记录再次领取失败: claimed=%v record=%#v err=%v", ok, claimed, err)
+	}
+	if count, err := inbox.RequeueStale(now.Add(4*time.Second), 2); err != nil || count != 1 {
+		t.Fatalf("达到上限的租约回收失败: count=%d err=%v", count, err)
+	}
+	if exhausted, ok, err := inbox.ClaimNext(now.Add(5*time.Second), 2); err != nil || ok {
+		t.Fatalf("达到最大次数后不得再次领取: claimed=%v record=%#v err=%v", ok, exhausted, err)
 	}
 	other, err := NewPostgresInbox(db, tenant+"-other")
 	if err != nil {

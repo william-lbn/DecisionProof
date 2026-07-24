@@ -336,12 +336,25 @@ func (s *Service) GetEngineeringPackage(ctx context.Context, tenantID, id string
 func (s *Service) GetPackageDecisions(ctx context.Context, tenantID string, pkg EngineeringReadinessPackage) ([]ProductDecision, error) {
 	_ = ctx
 	items := make([]ProductDecision, 0, len(pkg.DecisionIDs))
+	digestEntries := make([]string, 0, len(pkg.DecisionIDs))
 	for _, id := range pkg.DecisionIDs {
 		item, err := s.repo.GetDecision(ctx, tenantID, id)
 		if err != nil {
 			return nil, fmt.Errorf("读取工程就绪包决策 %s 失败: %w", id, err)
 		}
+		if item.Status != DecisionApproved {
+			return nil, fmt.Errorf("工程就绪包决策 %s 不再是 APPROVED，拒绝交付", id)
+		}
 		items = append(items, item)
+		digestEntries = append(digestEntries, item.ID+":"+item.CanonicalDigest)
+	}
+	sort.Strings(digestEntries)
+	currentDigest, err := integrity.SHA256Object(digestEntries)
+	if err != nil {
+		return nil, err
+	}
+	if currentDigest != pkg.Digest {
+		return nil, errors.New("工程就绪包引用决策已变化，Digest 校验失败")
 	}
 	return items, nil
 }

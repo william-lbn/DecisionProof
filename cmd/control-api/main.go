@@ -14,6 +14,7 @@ import (
 
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/william-lbn/DecisionProof/internal/ai"
+	"github.com/william-lbn/DecisionProof/internal/authn"
 	"github.com/william-lbn/DecisionProof/internal/database"
 	"github.com/william-lbn/DecisionProof/internal/executor"
 	"github.com/william-lbn/DecisionProof/internal/httpapi"
@@ -106,6 +107,48 @@ func main() {
 	root := http.NewServeMux()
 	root.Handle("/product/v1/", productHandler)
 	root.Handle("/app/", ui.Handler())
+	runtimeCtx, runtimeCancel := context.WithCancel(context.Background())
+	defer runtimeCancel()
+
+	// GitLab API Token 只从部署 Secret 读取；Base URL 同样由运维固定，API 调用者不能把平台变成 SSRF 代理。
+	gitlabBaseURL := strings.TrimSpace(os.Getenv("SDLC_GITLAB_BASE_URL"))
+	gitlabAPIToken := strings.TrimSpace(os.Getenv("SDLC_GITLAB_API_TOKEN"))
+	var (
+		gitlabRuntimeRepo *gitlabintegration.PostgresRuntimeRepository
+		gitlabAPIClient   *gitlabintegration.Client
+	)
+	if (gitlabBaseURL == "") != (gitlabAPIToken == "") {
+		log.Fatal("SDLC_GITLAB_BASE_URL 与 SDLC_GITLAB_API_TOKEN 必须同时配置")
+	}
+	if gitlabBaseURL != "" {
+		if db == nil {
+			log.Fatal("GitLab Runtime API 当前要求 PostgreSQL 模式")
+		}
+		gitlabRuntimeRepo, err = gitlabintegration.NewPostgresRuntimeRepository(db)
+		if err != nil {
+			log.Fatalf("初始化 GitLab Runtime Repository 失败: %v", err)
+		}
+		gitlabAuthMode := gitlabintegration.AuthPrivateToken
+		if strings.EqualFold(strings.TrimSpace(os.Getenv("SDLC_GITLAB_API_AUTH_MODE")), "bearer") {
+			gitlabAuthMode = gitlabintegration.AuthBearer
+		}
+		secretReference := envOr("SDLC_GITLAB_API_SECRET_REFERENCE", "gitlab-primary")
+		gitlabAPIClient, err = gitlabintegration.NewClient(gitlabBaseURL, gitlabAPIToken, gitlabAuthMode)
+		if err != nil {
+			log.Fatalf("初始化 GitLab API Client 失败: %v", err)
+		}
+		gitlabRuntime := &gitlabintegration.RuntimeService{
+			Repository: gitlabRuntimeRepo, Product: productService, BaseURL: gitlabBaseURL,
+			SecretReference: secretReference,
+			Credentials: gitlabintegration.StaticCredentialResolver{
+				Reference: secretReference,
+				Credential: gitlabintegration.Credential{
+					Token: gitlabAPIToken, AuthMode: gitlabAuthMode,
+				},
+			},
+		}
+		root.Handle("/integrations/v1/gitlab/", gitlabintegration.RuntimeHTTPHandler{Service: gitlabRuntime})
+	}
 
 	// GitLab Webhook 接收器只有在配置签名密钥或旧版 Token 时才启用。
 	// 当前 FileInbox 用于单节点真实性验证；生产多副本必须切换 PostgreSQL Inbox。
@@ -137,6 +180,19 @@ func main() {
 			},
 			Inbox: inbox,
 		})
+		if gitlabAPIClient != nil && gitlabRuntimeRepo != nil {
+			reconciler := &gitlabintegration.Reconciler{
+				Inbox: inbox,
+				Processor: gitlabintegration.GitLabReadbackProcessor{
+					API: gitlabAPIClient, Integrations: gitlabRuntimeRepo,
+				},
+				MaxAttempts: 5,
+				OnError: func(err error) {
+					log.Printf("GitLab Webhook Reconciler 失败: %v", err)
+				},
+			}
+			go reconciler.Run(runtimeCtx)
+		}
 	}
 	root.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/" {
@@ -145,7 +201,28 @@ func main() {
 		}
 		coreHandler.ServeHTTP(w, r)
 	})
-	handler := securityHeaders(root)
+	authMode := strings.TrimSpace(os.Getenv("SDLC_AUTH_MODE"))
+	if authMode == "" {
+		if production {
+			log.Fatal("生产环境必须显式配置 SDLC_AUTH_MODE")
+		}
+		authMode = string(authn.ModeDevelopmentHeaders)
+	}
+	authCtx, authCancel := context.WithTimeout(context.Background(), 10*time.Second)
+	authMiddleware, err := authn.NewMiddleware(authCtx, authn.Config{
+		Mode:                            authn.Mode(authMode),
+		Production:                      production,
+		AllowInsecureDevelopmentHeaders: strings.EqualFold(strings.TrimSpace(os.Getenv("SDLC_ALLOW_INSECURE_DEV_AUTH")), "true"),
+		IssuerURL:                       strings.TrimSpace(os.Getenv("SDLC_OIDC_ISSUER_URL")),
+		Audience:                        strings.TrimSpace(os.Getenv("SDLC_OIDC_AUDIENCE")),
+		TenantClaim:                     envOr("SDLC_OIDC_TENANT_CLAIM", "tenant_id"),
+		RolesClaim:                      envOr("SDLC_OIDC_ROLES_CLAIM", "roles"),
+	})
+	authCancel()
+	if err != nil {
+		log.Fatalf("初始化身份认证失败: %v", err)
+	}
+	handler := securityHeaders(authn.SameOrigin(authMiddleware(root)))
 
 	server := &http.Server{
 		Addr:              address,
@@ -167,6 +244,7 @@ func main() {
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM)
 	<-stop
+	runtimeCancel()
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	if err := server.Shutdown(ctx); err != nil {

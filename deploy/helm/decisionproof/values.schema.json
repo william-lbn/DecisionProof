@@ -16,6 +16,29 @@
       "type": "object",
       "additionalProperties": {"type": "string"}
     },
+    "auth": {
+      "type": "object",
+      "required": ["mode", "allowInsecureDevelopmentHeaders", "oidc"],
+      "properties": {
+        "mode": {"type": "string", "enum": ["development_headers", "oidc_bearer"]},
+        "allowInsecureDevelopmentHeaders": {"type": "boolean"},
+        "oidc": {
+          "type": "object",
+          "required": ["issuerURL", "audience", "tenantClaim", "rolesClaim", "egressCIDRs", "port"],
+          "properties": {
+            "issuerURL": {"type": "string"},
+            "audience": {"type": "string"},
+            "tenantClaim": {"type": "string", "minLength": 1},
+            "rolesClaim": {"type": "string", "minLength": 1},
+            "egressCIDRs": {
+              "type": "array",
+              "items": {"type": "string", "pattern": "^[0-9a-fA-F:.]+/[0-9]+$"}
+            },
+            "port": {"type": "integer", "minimum": 1, "maximum": 65535}
+          }
+        }
+      }
+    },
     "storage": {
       "type": "object",
       "required": ["mode"],
@@ -35,10 +58,26 @@
     },
     "gitlab": {
       "type": "object",
-      "required": ["tenantID", "integrationID"],
+      "required": ["tenantID", "integrationID", "api"],
       "properties": {
         "tenantID": {"type": "string"},
-        "integrationID": {"type": "string", "minLength": 1}
+        "integrationID": {"type": "string", "minLength": 1},
+        "api": {
+          "type": "object",
+          "required": ["baseURL", "existingSecret", "tokenKey", "authMode", "secretReference", "egressCIDRs", "port"],
+          "properties": {
+            "baseURL": {"type": "string"},
+            "existingSecret": {"type": "string"},
+            "tokenKey": {"type": "string", "minLength": 1},
+            "authMode": {"type": "string", "enum": ["private_token", "bearer"]},
+            "secretReference": {"type": "string", "minLength": 1},
+            "egressCIDRs": {
+              "type": "array",
+              "items": {"type": "string", "pattern": "^[0-9a-fA-F:.]+/[0-9]+$"}
+            },
+            "port": {"type": "integer", "minimum": 1, "maximum": 65535}
+          }
+        }
       }
     }
   }

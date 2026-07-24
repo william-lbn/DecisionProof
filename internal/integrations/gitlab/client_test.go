@@ -7,6 +7,7 @@ import (
 	"encoding/hex"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"sync/atomic"
 	"testing"
 )
@@ -47,6 +48,55 @@ func TestWriteDoesNotRetry(t *testing.T) {
 		t.Fatalf("write retried %d", calls)
 	}
 }
+
+func TestClientRejectsNonAbsoluteOrCredentialedBaseURL(t *testing.T) {
+	for _, value := range []string{"localhost:8080", "/gitlab", "https://user:secret@gitlab.example"} {
+		if _, err := NewClient(value, "token", AuthPrivateToken); err == nil {
+			t.Fatalf("必须拒绝不安全 BaseURL %q", value)
+		}
+	}
+	if _, err := NewClient("https://gitlab.example", "", AuthPrivateToken); err == nil {
+		t.Fatal("必须拒绝空 Token")
+	}
+	if _, err := NewClient("https://gitlab.example", "token", AuthMode("unknown")); err == nil {
+		t.Fatal("必须拒绝未知 AuthMode")
+	}
+}
+
+func TestClientDoesNotFollowRedirectWithToken(t *testing.T) {
+	var redirected int32
+	var server *httptest.Server
+	server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/redirect-target" {
+			atomic.AddInt32(&redirected, 1)
+			if r.Header.Get("PRIVATE-TOKEN") != "" {
+				t.Error("重定向请求泄漏了 PRIVATE-TOKEN")
+			}
+			return
+		}
+		http.Redirect(w, r, server.URL+"/redirect-target", http.StatusFound)
+	}))
+	defer server.Close()
+	client, err := NewClient(server.URL, "sensitive-token", AuthPrivateToken)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := client.GetProject(context.Background(), 1); err == nil {
+		t.Fatal("GitLab Client 必须拒绝 3xx 而不是跟随")
+	}
+	if redirected != 0 {
+		t.Fatalf("GitLab Client 跟随了重定向: %d", redirected)
+	}
+}
+
+func TestProviderErrorBodyRedactsSecrets(t *testing.T) {
+	body := []byte(`{"access_token":"secret-value","message":"secret-value"}`)
+	safe := safeBody(body, "secret-value")
+	if strings.Contains(safe, "secret-value") || !strings.Contains(safe, "[REDACTED]") {
+		t.Fatalf("Provider 错误体脱敏失败: %s", safe)
+	}
+}
+
 func TestWebhookHMAC(t *testing.T) {
 	body := []byte(`{"x":1}`)
 	secret := "s"

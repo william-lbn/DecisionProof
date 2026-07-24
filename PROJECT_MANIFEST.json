@@ -50,7 +50,7 @@
     {
       "path": ".github/workflows/ci.yml",
       "bytes": 1444,
-      "sha256": "44616910a53e8946751b38737041d3f595bbd4c48ffc3871f116e87da8bb311e"
+      "sha256": "0d21ecff80b48c12af1a04b5cb5523e147083a963f08bc282cd564c22372ce67"
     },
     {
       "path": ".gitignore",
@@ -59,8 +59,8 @@
     },
     {
       "path": ".gitlab-ci.yml",
-      "bytes": 1484,
-      "sha256": "81adf74937f46c83fab577846d6662d423b02996f5d5832b1aff1a12eab712ab"
+      "bytes": 1483,
+      "sha256": "ae49ad02e3d8299eaaad143d77ddf044b28792c7a8805ccce5f00367d818a520"
     },
     {
       "path": "AGENTS.md",
@@ -69,8 +69,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "bytes": 2397,
-      "sha256": "ba40e792e0d885bd68a755ff0777a95bb18d3458e5ccff4e46eb03c300d110a4"
+      "bytes": 4019,
+      "sha256": "b19f27d6c537bb3094b2771d5707b92961d7bb5905c2aa1bc9528aaebe088591"
     },
     {
       "path": "CODE_OF_CONDUCT.md",
@@ -80,12 +80,12 @@
     {
       "path": "CONTRIBUTING.md",
       "bytes": 1606,
-      "sha256": "255bef1db4892ef7d8006e9f128b9de406ec41f17165b8729949a1d5b4d2043c"
+      "sha256": "f39e9c6c80dbe9fdb48a37183d079b8dec0c4ea8c75cae5989b03d75e9a008ae"
     },
     {
       "path": "DELIVERY.md",
-      "bytes": 1949,
-      "sha256": "7671b2eec8a80528f14aa3fbff7eda911ec45e74d0e4e6aae569e9b32e0fbbab"
+      "bytes": 2174,
+      "sha256": "7a136752e0a1b2f2a40a627379bb8d5ddb4029ce3101ab0a2c1fa43e82536ad2"
     },
     {
       "path": "LICENSE",
@@ -99,13 +99,13 @@
     },
     {
       "path": "PLANS.md",
-      "bytes": 731,
-      "sha256": "22a333e0d0e420a21218cc1cf22d33157986ad9f030ba653bcf86ef945c472c9"
+      "bytes": 860,
+      "sha256": "d3c9ef4a8953c6de19ef78a68db247db766b9c3e0c38461e5368080f573a08c2"
     },
     {
       "path": "README.md",
-      "bytes": 5041,
-      "sha256": "b9b42d620cd1b15bb8e70d473a9a204d42b66aa8c83e619861204cf125bff250"
+      "bytes": 5557,
+      "sha256": "7c647587cdd9e31be2613d77123687500ffdd1764a4e80e45ff7e9f21372aceb"
     },
     {
       "path": "SECURITY.md",
@@ -114,8 +114,8 @@
     },
     {
       "path": "cmd/control-api/main.go",
-      "bytes": 7604,
-      "sha256": "7e2f8ab1bdc305e3c40a16e0b59c09a5a1747f456d5b7e81853cdbc400339cce"
+      "bytes": 11008,
+      "sha256": "ee0c39ec5fab97b3bfd4fa40003b5b6854575df6baa7c06a3559a19bf276ab1a"
     },
     {
       "path": "cmd/demo/main.go",
@@ -134,8 +134,8 @@
     },
     {
       "path": "deploy/docker/Dockerfile",
-      "bytes": 1224,
-      "sha256": "acd9b170831d0044375b09ffc9ade17ea2ec1144beacf98718b74582ed8ab28f"
+      "bytes": 1235,
+      "sha256": "94c021a5af97b86fd376e38d0156c99b48963af9c808d2fa0f4eeda7269c6983"
     },
     {
       "path": "deploy/examples/argo-rollouts/order-service-rollout-example.yaml",
@@ -154,13 +154,13 @@
     },
     {
       "path": "deploy/helm/decisionproof/Chart.yaml",
-      "bytes": 225,
-      "sha256": "ad2a452500a1abbcde19b97071b109da127115caf3689a258491beb1930afd2f"
+      "bytes": 246,
+      "sha256": "83fa8edb2650075fe9f52555a068dd39a9b8f91afb5e4115536b1761822d7c20"
     },
     {
       "path": "deploy/helm/decisionproof/README.md",
-      "bytes": 803,
-      "sha256": "4882ba7a16383fd970b81089093cc6e25e41189fc24f10b14ffbd7c596d90444"
+      "bytes": 1404,
+      "sha256": "0fa2275899b082ba4c3f3f61c644f3a511fb286a3408485f996ee32d87df89f7"
     },
     {
       "path": "deploy/helm/decisionproof/templates/_helpers.tpl",
@@ -169,13 +169,13 @@
     },
     {
       "path": "deploy/helm/decisionproof/templates/deployment.yaml",
-      "bytes": 4518,
-      "sha256": "e07268537d6301932874b7467f6d959eb866be34b9a0237c645600eb4a291401"
+      "bytes": 6074,
+      "sha256": "85f32c22cff9b52e87cb66d23c700af42136ca0e1edb56594d39e38301817079"
     },
     {
       "path": "deploy/helm/decisionproof/templates/networkpolicy.yaml",
-      "bytes": 1012,
-      "sha256": "686a6f8454460645242828773b3adb0de4972aac1ae5db415225adac8eea2d7d"
+      "bytes": 1732,
+      "sha256": "4bd514bce7bdc37e86c1b37bfc98b7bf54a7d189fa676d0fbd9fcb70f9b52f49"
     },
     {
       "path": "deploy/helm/decisionproof/templates/pvc.yaml",
@@ -194,13 +194,13 @@
     },
     {
       "path": "deploy/helm/decisionproof/values.schema.json",
-      "bytes": 1408,
-      "sha256": "19f5d94a8c19c39e64bcd00ed0b1aaa6e1b58a90c184b118c505b9fee2fc192b"
+      "bytes": 3086,
+      "sha256": "82e8efcd5273491b6213a8de7823077f5208be1818054fabb1546462832db964"
     },
     {
       "path": "deploy/helm/decisionproof/values.yaml",
-      "bytes": 1335,
-      "sha256": "b31462190cb939437dead8c48933391b63bf049606692f355390c8b920eaaa3d"
+      "bytes": 2005,
+      "sha256": "700d5a5ae229c09f9d9a50e1211d25722194897f373c108a1b2d29b295cbf753"
     },
     {
       "path": "docs/00_产品架构与研发总纲.md",
@@ -224,8 +224,8 @@
     },
     {
       "path": "docs/04_GitLab一期集成.md",
-      "bytes": 1152,
-      "sha256": "94e60fed5230115f816094f54ed9b2de020cd320893939dbb50b9ae649600def"
+      "bytes": 2288,
+      "sha256": "1013c465ffb13cf3c3fb48b236557a18cda81fe595664bb2d989b1717d535376"
     },
     {
       "path": "docs/05_安全_证据与供应链.md",
@@ -234,8 +234,8 @@
     },
     {
       "path": "docs/06_研发计划_Codex任务.md",
-      "bytes": 1974,
-      "sha256": "8d070b0853f88db4889487e0f7705f677ba8600ca861f666917e93a992bfedd6"
+      "bytes": 2300,
+      "sha256": "adb220403b9077fd95812fe7112cb8bd658ecc413a6babc9da20df0952f7d823"
     },
     {
       "path": "docs/07_验证计划与生产验收.md",
@@ -259,28 +259,33 @@
     },
     {
       "path": "docs/11_全面审计与端到端实施计划.md",
-      "bytes": 11792,
-      "sha256": "f63e0ac39c2bd2bdfaec99afcc7cd05627bd13c77170ded49f20d69579074025"
+      "bytes": 12745,
+      "sha256": "b6253c2bed6a3afad3b7e31ca24dabe12ecefa8eefb8fc871eb6ccf5f97208d2"
     },
     {
       "path": "docs/12_实验部署与使用手册.md",
-      "bytes": 9074,
-      "sha256": "d45f88288596240a73109be1307ff086a51320d6c46faf93656cd52258d0aff4"
+      "bytes": 9375,
+      "sha256": "d7765b244a894fe86c5c8f604f39e7a2f110dcac3b0d94eb8719e0804e0512cb"
+    },
+    {
+      "path": "docs/13_身份与GitLab交付使用手册.md",
+      "bytes": 7803,
+      "sha256": "4973878166972f9b8239423e9c981ee9e6f78a13084634adb2567caf74ca2e99"
     },
     {
       "path": "docs/IMPLEMENTATION_STATUS.md",
-      "bytes": 3020,
-      "sha256": "d9daaca1790976a2d68facf974b4ea6558784ece4b022896c178ee511ec07bb7"
+      "bytes": 4048,
+      "sha256": "b898906b436bee2e97ff90b1b8da5f8bcd6d1ab4c603478268f3f61043275d7c"
     },
     {
       "path": "go.mod",
-      "bytes": 421,
-      "sha256": "2ae42d75b7dca4b941e452e3bac65d5ab6ab78b5239b215a9eb60357b8844287"
+      "bytes": 503,
+      "sha256": "9638a59cf3ad653b6175de0933b299178376923bf01e02f0445e9fab07d75b1d"
     },
     {
       "path": "go.sum",
-      "bytes": 2456,
-      "sha256": "4e7e05768d607a1cc09d1dbe92d138751e9111200e8eadf2be5d7c99b189e834"
+      "bytes": 2814,
+      "sha256": "f49ea78b236bbfceaafde9557ff88ab76a8a2cf15e7d7a66ab9c481da4add566"
     },
     {
       "path": "internal/agent/cli.go",
@@ -351,6 +356,26 @@
       "path": "internal/assurance/qualifier_test.go",
       "bytes": 1309,
       "sha256": "c9d86b004520c1ff826c4651cc3cb985aa97489e2198876919f312d0c3155226"
+    },
+    {
+      "path": "internal/authn/authn.go",
+      "bytes": 7138,
+      "sha256": "300196057efe55f6c4567ae1c1613f75c9318a37cf4d25e281e20a832a48ffe0"
+    },
+    {
+      "path": "internal/authn/authn_test.go",
+      "bytes": 3199,
+      "sha256": "3f0fdd1ccb60b476f14a37600bf9142308e177222f8c8c97b5b9656177d9cf2b"
+    },
+    {
+      "path": "internal/authn/csrf.go",
+      "bytes": 1167,
+      "sha256": "d92d688b8f96790e08928699b50460b6b67c4c3fd0e8297c6e88ba7ff8f6e5c3"
+    },
+    {
+      "path": "internal/authn/oidc_integration_test.go",
+      "bytes": 3067,
+      "sha256": "2fa5db435de658060ebf73884e457738252b64d727d206de3ab380ce6f61aae0"
     },
     {
       "path": "internal/database/migrate.go",
@@ -449,28 +474,68 @@
     },
     {
       "path": "internal/integrations/gitlab/client.go",
-      "bytes": 12866,
-      "sha256": "f1066876d15f2e1d45e7fffc51f0319ea4bc5307e045b36a017cd1472382a558"
+      "bytes": 14871,
+      "sha256": "abb83092beee427bac539ba387243f79c413c7afa3e7433a09627c653f8a3a1f"
     },
     {
       "path": "internal/integrations/gitlab/client_test.go",
-      "bytes": 1787,
-      "sha256": "92acacfb07447e254ca8a0209a0b5079d95cbc6cb754d3efc0dcfd8c29ea900e"
+      "bytes": 3522,
+      "sha256": "641916d3dc1ccdddf14f19f0a061e66c5c13c75a2fed48f2d8adc8cedc6e1060"
+    },
+    {
+      "path": "internal/integrations/gitlab/delivery.go",
+      "bytes": 11129,
+      "sha256": "9bf92e66693031a9cd4469ea72c7f9df94a6d768fda4c2847b8b7c9df2dc0809"
+    },
+    {
+      "path": "internal/integrations/gitlab/delivery_test.go",
+      "bytes": 5235,
+      "sha256": "6abf0fef474c6fd94d352e97637c12d703f8f87fe40e17eadc795920be603723"
     },
     {
       "path": "internal/integrations/gitlab/inbox.go",
-      "bytes": 6628,
-      "sha256": "20a39a763dc550e2282c24980c30a27382268a9232d05a1c7dfa360dcf347e1b"
+      "bytes": 8902,
+      "sha256": "b53e13cd4ee9d10606e46995c81fb9a25991937a416865bb455248598389ad8c"
     },
     {
       "path": "internal/integrations/gitlab/postgres_inbox.go",
-      "bytes": 5225,
-      "sha256": "f614b4fd37786ca2eb0c70e69a5f73b2dc64dd0ac9381ef017193b9ffebb17d1"
+      "bytes": 7165,
+      "sha256": "179eefebe5ac7229c500dc395cfd50664621208aff8c59cc00c9c910d3026a26"
     },
     {
       "path": "internal/integrations/gitlab/postgres_inbox_truth_test.go",
-      "bytes": 1737,
-      "sha256": "88badf3e21887f684868e235dc33348afa22f47e68450f98cf6db2dd8a6cfc12"
+      "bytes": 2431,
+      "sha256": "b0d4a1206abedfc9ef212b72d4c4958a4d00efb3cdddfba03d1235cf7f6840c3"
+    },
+    {
+      "path": "internal/integrations/gitlab/reconciler.go",
+      "bytes": 5584,
+      "sha256": "602ffaed242912f3d72394e471d7e7d25a5978a2b2e46cfda333e8daa7448510"
+    },
+    {
+      "path": "internal/integrations/gitlab/reconciler_test.go",
+      "bytes": 3614,
+      "sha256": "f4efbe9bdd8278a55a424c3c10fe5c8186ea2649438a39056730d585f3350680"
+    },
+    {
+      "path": "internal/integrations/gitlab/runtime.go",
+      "bytes": 18473,
+      "sha256": "1d85e189b753fdd49730d7eeeb8b56c2b842feb58014a2e58b04e47a235a6fe9"
+    },
+    {
+      "path": "internal/integrations/gitlab/runtime_http.go",
+      "bytes": 4342,
+      "sha256": "f80c58f61702885d0f867b2c9c10c70150032d366772082c490aac3597684dca"
+    },
+    {
+      "path": "internal/integrations/gitlab/runtime_postgres_truth_test.go",
+      "bytes": 2924,
+      "sha256": "2593c46dd44649966b9bf8296c3aaf5bd5e42bf50dd6772b9e1a4a94bce67631"
+    },
+    {
+      "path": "internal/integrations/gitlab/runtime_test.go",
+      "bytes": 9502,
+      "sha256": "422060c1d7a4fbee55130c028ab2e2d9405496135ff83365e8bb9ec716e4395d"
     },
     {
       "path": "internal/integrations/gitlab/webhook.go",
@@ -534,23 +599,23 @@
     },
     {
       "path": "internal/product/service.go",
-      "bytes": 12956,
-      "sha256": "0c175901d271add6ae37a85c0964fbab1deb263e7d465b90c12b674bcdc0988a"
+      "bytes": 13475,
+      "sha256": "da25a4753f5da1aa43de5b599adf20d52195fdfd306000559c498ca17f5a3e4b"
     },
     {
       "path": "internal/product/service_test.go",
-      "bytes": 4785,
-      "sha256": "2a52920ef2b8b8310729cc230baf12dcf5997a9da582afd7c46e08f995cac752"
+      "bytes": 5976,
+      "sha256": "9f367a28e0d304d6f0cfb1cf24149218dc62aa3559ce4b66cc7c1165da53c9ec"
     },
     {
       "path": "internal/productapi/http.go",
-      "bytes": 10777,
-      "sha256": "f8964de1fe1d8a4b376df8d166cec3bf28538f947e38c43014adc2a570a72bc2"
+      "bytes": 13172,
+      "sha256": "1e985f46a81f6cefe1e8ed4b41cc56a4f37d22cbafed9e00824990b95a9af92a"
     },
     {
       "path": "internal/productapi/http_test.go",
-      "bytes": 6855,
-      "sha256": "68a02847b7e26624f098c5679d8600ad2fecea4c57391e5d372ee81c46dee19b"
+      "bytes": 7676,
+      "sha256": "a3d02fdc20524acd267cf74c90bd1c78f263a66bbf60c32d6224afe74cc38d87"
     },
     {
       "path": "internal/security/signer.go",
@@ -649,13 +714,13 @@
     },
     {
       "path": "internal/ui/assets/app.js",
-      "bytes": 4339,
-      "sha256": "d2a0f3f61a03d6c22753aab78fe90289fc866f552ae7f8e0d94b3df862167bca"
+      "bytes": 4372,
+      "sha256": "724b99f2123552b0835dca4b161e2a35b4794f339151132b6aefdf8364b29dc7"
     },
     {
       "path": "internal/ui/assets/index.html",
-      "bytes": 2603,
-      "sha256": "40b43492175cfdd8f5c9d5b9e73fb8cfc353e0e1dbfd859d09e9a65e02e9d67e"
+      "bytes": 2721,
+      "sha256": "77a3d2b7d0295bf8be29def6cc65c3cc73d26094941c99851ddbd0f95b87d78e"
     },
     {
       "path": "internal/ui/assets/styles.css",
@@ -693,6 +758,16 @@
       "sha256": "c1c4ad58bc8ef1c33e11f49d53adc41cffff73837f3fafaa8f7baa6ad74997a3"
     },
     {
+      "path": "migrations/0005_gitlab_delivery_runtime.sql",
+      "bytes": 1656,
+      "sha256": "9604075bb48665fa88060eb33b8e5dc82da838daa29e663e210bc8230ad9dcbf"
+    },
+    {
+      "path": "migrations/0006_webhook_reconciler.sql",
+      "bytes": 483,
+      "sha256": "5a33424219de3d9f993db3f632543d45079e011f8ab58e58c506201bad360d16"
+    },
+    {
       "path": "migrations/embed.go",
       "bytes": 264,
       "sha256": "aa9abe84889cd72a3f7e9979cb06a1c303a35b5a8fc976bbf76e184dae671a19"
@@ -704,8 +779,8 @@
     },
     {
       "path": "schemas/openapi.yaml",
-      "bytes": 11971,
-      "sha256": "72bbc5cd8607860b1ef9a0249666dbaf6c698db2f6d12a3ab25469a9a1d83b06"
+      "bytes": 16797,
+      "sha256": "9512eccd00117b20a2ecdb93615ad35747aae173eb7f39dbce936619a5be2133"
     },
     {
       "path": "schemas/v2/agent-event.schema.json",
@@ -734,13 +809,13 @@
     },
     {
       "path": "scripts/check-docs.sh",
-      "bytes": 714,
-      "sha256": "eb3051b7f014248e3fd061dc32e008ded2afebd0bdca1e9d8dc7db0804a2ddc2"
+      "bytes": 961,
+      "sha256": "52af11ecc465a0a3a0b3d12cd5dde8d891c36a721668e5d16a4398bcd6a50c39"
     },
     {
       "path": "scripts/generate-manifest.go",
-      "bytes": 3744,
-      "sha256": "7c79e7f43730db41b56342bd0a09f9cd44ecb350adcff0d89e1153cbc29fea05"
+      "bytes": 3938,
+      "sha256": "2de8b1ed94f07e95922bb703fdc9bd28c24494548a254308b226de0bff9a1a2a"
     },
     {
       "path": "scripts/verify.sh",
@@ -751,6 +826,11 @@
       "path": "validation/POSTGRES_K8S_VALIDATION_REPORT.md",
       "bytes": 4986,
       "sha256": "26cf518f5335026dda8e523bff3377fc8648da9468a312cc443836af6c2e2be6"
+    },
+    {
+      "path": "validation/STAGE_C_VALIDATION_REPORT.md",
+      "bytes": 4732,
+      "sha256": "28514f9a2d29947abee4b94f1103bb0602a1ba1502f161615fa143ef5ef25f29"
     },
     {
       "path": "validation/VALIDATION_REPORT.md",
@@ -765,22 +845,26 @@
   ],
   "product": "DecisionProof V2",
   "statistics": {
-    "files_excluding_bin": 152,
-    "go_files": 81,
-    "go_lines": 9103,
-    "local_test_coverage": "51.4%",
-    "markdown_files": 28,
-    "markdown_lines": 2313
+    "files_excluding_bin": 168,
+    "go_files": 93,
+    "go_lines": 11718,
+    "local_test_coverage": "54.0%",
+    "markdown_files": 30,
+    "markdown_lines": 2793
   },
   "truthfulness_status": {
     "argo_delivery": "NOT_IMPLEMENTED",
+    "enterprise_oidc_provider": "NOT_RUN",
+    "gitlab_delivery_contract": "VERIFIED",
     "kubernetes_agent_runtime": "NOT_IMPLEMENTED",
     "kubernetes_experimental": "VERIFIED_DOCKER_DESKTOP",
     "local_engineering_foundation": "VERIFIED",
+    "oidc_local_crypto_integration": "VERIFIED",
     "postgres_runtime": "VERIFIED_SINGLE_NODE",
     "production_ready": "NO",
     "real_gitlab_provider": "NOT_RUN",
-    "temporal_workflow": "NOT_IMPLEMENTED"
+    "temporal_workflow": "NOT_IMPLEMENTED",
+    "webhook_reconciler_postgres": "VERIFIED"
   },
-  "version": "2.1.0-postgres-experimental"
+  "version": "2.2.0-stage-c-contract"
 }

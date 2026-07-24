@@ -1,4 +1,4 @@
-const $=id=>document.getElementById(id);const headers=()=>({'X-Tenant-ID':$('tenant').value,'X-Actor-ID':$('actor').value});
+const $=id=>document.getElementById(id);const headers=()=>({'X-Tenant-ID':$('tenant').value,'X-Actor-ID':$('actor').value,'X-Actor-Roles':$('roles').value});
 async function json(res){const body=await res.json().catch(()=>({message:'响应不是 JSON'}));if(!res.ok)throw new Error(body.message||body.error||JSON.stringify(body));return body}
 $('upload').onsubmit=async e=>{e.preventDefault();const fd=new FormData();fd.append('project_id',$('project').value);fd.append('file',$('file').files[0]);try{const v=await json(await fetch('/product/v1/documents',{method:'POST',headers:headers(),body:fd}));$('documentResult').textContent=JSON.stringify(v,null,2);$('documentId').value=v.id}catch(err){$('documentResult').textContent=err.message}}
 $('extract').onclick=async()=>{const id=$('documentId').value;if(!id)return alert('请先填写文档 ID');try{const v=await json(await fetch(`/product/v1/documents/${id}/extract`,{method:'POST',headers:headers()}));$('documentResult').textContent=JSON.stringify(v.run,null,2);render(v.decisions)}catch(err){alert(err.message)}}

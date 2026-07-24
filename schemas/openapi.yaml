@@ -1,20 +1,24 @@
 openapi: 3.1.0
 info:
   title: DecisionProof Control API
-  version: 0.3.0
+  version: 0.4.0
   description: |
     产品决策到生产结果的可信闭环平台 API。
-    当前开发模式使用身份头；生产环境必须由 GitLab OAuth/OIDC 或可信网关注入身份。
+    生产模式使用 OIDC Bearer 并从验签 Claim 注入身份；开发身份头只能在隔离实验中显式开启。
 servers:
   - url: http://localhost:8080
+security:
+  - OIDCBearer: []
 paths:
   /healthz:
     get:
+      security: []
       summary: 进程存活检查
       responses:
         '200': {description: 正常}
   /readyz:
     get:
+      security: []
       summary: 运行时依赖就绪检查
       description: PostgreSQL 不可用时 Fail-closed 返回 503；Kubernetes Readiness Probe 使用此接口。
       responses:
@@ -23,6 +27,7 @@ paths:
   /product/v1/documents:
     post:
       summary: 上传并解析产品资料
+      x-required-roles: [product_manager]
       description: 支持 Markdown、TXT、DOCX 和 PPTX；PDF 当前需要外部解析器。
       parameters:
         - $ref: '#/components/parameters/TenantHeader'
@@ -43,6 +48,7 @@ paths:
   /product/v1/documents/{document_id}/extract:
     post:
       summary: 从资料中提取结构化产品决策
+      x-required-roles: [product_manager]
       parameters:
         - $ref: '#/components/parameters/DocumentID'
         - $ref: '#/components/parameters/TenantHeader'
@@ -52,6 +58,7 @@ paths:
   /product/v1/decisions:
     get:
       summary: 查询项目产品决策
+      x-required-roles: [product_manager, product_approver, delivery_manager, auditor]
       parameters:
         - in: query
           name: project_id
@@ -62,6 +69,7 @@ paths:
         '200': {description: 决策列表}
     post:
       summary: 人工创建产品决策
+      x-required-roles: [product_manager]
       parameters:
         - $ref: '#/components/parameters/TenantHeader'
         - $ref: '#/components/parameters/ActorHeader'
@@ -84,6 +92,7 @@ paths:
   /product/v1/decisions/{decision_id}:
     patch:
       summary: 修订产品决策并使旧批准失效
+      x-required-roles: [product_manager]
       parameters:
         - $ref: '#/components/parameters/DecisionID'
         - $ref: '#/components/parameters/TenantHeader'
@@ -106,6 +115,7 @@ paths:
   /product/v1/decisions/{decision_id}/confirm:
     post:
       summary: 人工确认提取结果
+      x-required-roles: [product_manager]
       parameters:
         - $ref: '#/components/parameters/DecisionID'
         - $ref: '#/components/parameters/TenantHeader'
@@ -125,6 +135,7 @@ paths:
   /product/v1/decisions/{decision_id}/approve:
     post:
       summary: 授权人批准产品决策
+      x-required-roles: [product_approver]
       parameters:
         - $ref: '#/components/parameters/DecisionID'
         - $ref: '#/components/parameters/TenantHeader'
@@ -144,6 +155,7 @@ paths:
   /product/v1/decisions/{decision_id}/reject:
     post:
       summary: 否决产品决策
+      x-required-roles: [product_approver]
       parameters:
         - $ref: '#/components/parameters/DecisionID'
         - $ref: '#/components/parameters/TenantHeader'
@@ -165,6 +177,7 @@ paths:
   /product/v1/engineering-packages:
     post:
       summary: 生成工程就绪包
+      x-required-roles: [delivery_manager]
       parameters:
         - $ref: '#/components/parameters/TenantHeader'
         - $ref: '#/components/parameters/ActorHeader'
@@ -183,6 +196,7 @@ paths:
   /product/v1/engineering-packages/{package_id}/gitlab-bundle:
     get:
       summary: 把工程就绪包确定性渲染为 GitLab Issue 和 Docs-as-Code 文件
+      x-required-roles: [delivery_manager, auditor]
       parameters:
         - $ref: '#/components/parameters/PackageID'
         - $ref: '#/components/parameters/TenantHeader'
@@ -192,12 +206,70 @@ paths:
         '404': {description: 工程就绪包不存在}
   /webhooks/gitlab:
     post:
+      security: []
       summary: GitLab Webhook Inbox 接收
       description: 使用 Webhook-Signature HMAC 或兼容的 X-Gitlab-Token 校验，按 Integration 和 Event UUID 幂等写入租户隔离 Inbox 后立即返回 202。
       responses:
         '202': {description: 已接收或识别为重复事件}
         '401': {description: 签名无效}
         '413': {description: 请求体过大}
+  /integrations/v1/gitlab/projects:
+    post:
+      summary: 接入并回读验证 GitLab Project
+      description: GitLab Base URL 与 Token 由部署配置固定；请求不能提交 Token 或任意 URL。需要 integration_admin 或 platform_admin。
+      parameters:
+        - $ref: '#/components/parameters/TenantHeader'
+        - $ref: '#/components/parameters/ActorHeader'
+        - $ref: '#/components/parameters/RolesHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [integration_id, project_id, external_project_id]
+              properties:
+                integration_id: {type: string, minLength: 1}
+                project_id: {type: string, minLength: 1}
+                external_project_id: {type: integer, minimum: 1}
+      responses:
+        '201':
+          description: 已通过 GitLab API 回读并保存 Project 绑定
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ProjectIntegration'}
+        '401': {description: OIDC 身份无效}
+        '403': {description: 缺少接入管理员角色}
+        '502': {description: GitLab Project 无法回读验证}
+  /integrations/v1/gitlab/deliveries:
+    post:
+      summary: 把工程就绪包幂等交付为 Issue、Branch、Commit 和 Draft MR
+      description: 需要 delivery_manager；每一步写后 Read-back，无法证明结果时记录 UNKNOWN 并禁止盲目重试。
+      parameters:
+        - $ref: '#/components/parameters/TenantHeader'
+        - $ref: '#/components/parameters/ActorHeader'
+        - $ref: '#/components/parameters/RolesHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [integration_id, package_id, idempotency_key]
+              properties:
+                integration_id: {type: string, minLength: 1}
+                package_id: {type: string, minLength: 1}
+                idempotency_key: {type: string, minLength: 1, maxLength: 200}
+      responses:
+        '201':
+          description: 已完成或幂等回读同一交付
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GitLabDeliveryRun'}
+        '409': {description: 外部状态冲突或 UNKNOWN，需要人工对账}
+        '502': {description: GitLab 已知失败}
   /v1/changes:
     post:
       summary: 创建工程变更
@@ -309,6 +381,12 @@ paths:
       responses:
         '202': {description: 已结算或进入 UNKNOWN 等待对账}
 components:
+  securitySchemes:
+    OIDCBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 必须由配置的 Issuer 签名且 Audience 匹配；Tenant 和 Roles 从受控 Claim 读取。
   parameters:
     ChangeID:
       in: path
@@ -345,4 +423,36 @@ components:
       in: header
       name: X-Actor-Roles
       required: false
+      description: 仅开发模式允许客户端提供；生产由 OIDC Roles Claim 注入。
       schema: {type: string}
+  schemas:
+    ProjectIntegration:
+      type: object
+      required: [tenant_id, integration_id, project_id, external_project_id, base_url, path_with_namespace, default_branch, status]
+      properties:
+        tenant_id: {type: string}
+        integration_id: {type: string}
+        project_id: {type: string}
+        external_project_id: {type: integer, format: int64}
+        base_url: {type: string, format: uri}
+        path_with_namespace: {type: string}
+        default_branch: {type: string}
+        visibility: {type: string}
+        status: {type: string, enum: [ACTIVE, DISABLED, ERROR]}
+        last_verified_at: {type: string, format: date-time}
+    GitLabDeliveryRun:
+      type: object
+      required: [tenant_id, delivery_id, integration_id, package_id, package_digest, idempotency_key, status]
+      properties:
+        tenant_id: {type: string}
+        delivery_id: {type: string}
+        integration_id: {type: string}
+        package_id: {type: string}
+        package_digest: {type: string, pattern: '^sha256:[a-f0-9]{64}$'}
+        idempotency_key: {type: string}
+        status: {type: string, enum: [PENDING, EXECUTING, SUCCEEDED, FAILED, UNKNOWN]}
+        issue_iid: {type: integer, format: int64}
+        branch_name: {type: string}
+        commit_sha: {type: string}
+        merge_request_iid: {type: integer, format: int64}
+        last_error: {type: string}

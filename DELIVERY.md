@@ -15,6 +15,8 @@
 - 工程就绪包；
 - GitLab 工程 Bundle；
 - GitLab REST/Webhook 基础；
+- OIDC Bearer 与角色门禁；
+- GitLab Project Onboarding、幂等 Delivery Executor 和 Webhook Read-back Reconciler；
 - 通用 AI 和 Agent Adapter 协议；
 - Evidence V2、Release Qualifier、Agent Release Manifest、Outcome Evaluator；
 - PostgreSQL 迁移；
@@ -31,6 +33,8 @@
 3. `docs/IMPLEMENTATION_STATUS.md`；
 4. `docs/06_研发计划_Codex任务.md`；
 5. `validation/VALIDATION_REPORT.md`。
+6. `docs/13_身份与GitLab交付使用手册.md`；
+7. `validation/STAGE_C_VALIDATION_REPORT.md`。
 
 ## 开源仓库边界
 

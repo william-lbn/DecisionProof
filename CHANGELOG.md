@@ -1,5 +1,36 @@
 # 变更记录
 
+## V2.2.0-stage-c-contract — 2026-07-24
+
+### 新增
+
+- OIDC Discovery/JWKS、Issuer/Audience/有效期验签和 Claim 身份映射；
+- 产品 API 与 GitLab Integration API 角色门禁，服务层继续禁止自我批准；
+- GitLab Project Onboarding，Token 仅由部署 Secret 注入；
+- Engineering Package 到 Issue、Branch、Commit、Draft MR 的幂等执行器；
+- GitLab 外部写入 Read-back、`UNKNOWN` Fail-closed 和持久化 Delivery Run；
+- PostgreSQL Webhook 原子领取、处理租约、最大尝试次数与后台 Reconciler；
+- MR/Pipeline/Push Webhook 的 GitLab API SHA 回读；
+- OpenAPI 0.4、Helm OIDC/GitLab 配置和受控出口 NetworkPolicy；
+- 身份与 GitLab 交付使用手册、Stage C 分层验证报告。
+
+### 安全修复
+
+- OIDC 模式删除客户端伪造身份头，只信任验签 Claim；
+- 工程包交付前重算当前批准决策 Digest，决策漂移时 Fail-closed；
+- GitLab Base URL 必须是无用户信息的 HTTP(S) 绝对地址；
+- 无效幂等键在持久化和外部写入前拒绝；
+- IdP/JWKS 与 GitLab 出口均要求 NetworkPolicy 显式 CIDR。
+- Go 工具链升级到 1.26.5，pgx 升级到 5.10.0，修复漏洞扫描发现的可达标准库、
+  SQL Placeholder 和 Unicode 处理漏洞。
+
+### 真实性限制
+
+- 已完成本地密码学 OIDC Integration、GitLab HTTP Contract 和真实 PostgreSQL Truth Test；
+- 企业 IdP 与真实 Disposable GitLab Project Truth Test 尚未执行；
+- 当前 UI 尚无 OIDC Authorization Code + PKCE/BFF；
+- 不具备 Temporal、供应链签名、GitOps 灰度或生产 HA。
+
 ## V2.1.0-postgres-experimental — 2026-07-24
 
 ### 新增
@@ -22,7 +53,7 @@
 - Docker 构建基础镜像绑定 Registry Digest；
 - PostgreSQL 模式 NetworkPolicy 显式允许同 namespace 5432。
 
-### 尚未完成
+### 尚未完成（该版本发布时）
 
 - GitLab OAuth、Project Onboarding 和 Webhook Reconciler；
 - Temporal、Kubernetes Agent、CI 供应链和 GitOps/Argo；

@@ -9,6 +9,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -38,11 +39,23 @@ func NewClient(baseURL, token string, mode AuthMode) (*Client, error) {
 	if baseURL == "" {
 		return nil, errors.New("GitLab BaseURL 不能为空")
 	}
-	if _, err := url.ParseRequestURI(baseURL); err != nil {
+	parsed, err := url.ParseRequestURI(baseURL)
+	if err != nil {
 		return nil, fmt.Errorf("GitLab BaseURL 无效: %w", err)
+	}
+	if (parsed.Scheme != "https" && parsed.Scheme != "http") || parsed.Host == "" || parsed.User != nil {
+		return nil, errors.New("GitLab BaseURL 必须是无用户信息的 HTTP(S) 绝对地址")
+	}
+	if strings.TrimSpace(token) == "" {
+		return nil, errors.New("GitLab API Token 不能为空")
 	}
 	if mode == "" {
 		mode = AuthPrivateToken
+	}
+	switch mode {
+	case AuthPrivateToken, AuthJobToken, AuthBearer:
+	default:
+		return nil, fmt.Errorf("不支持的 GitLab AuthMode %q", mode)
 	}
 	return &Client{BaseURL: baseURL, Token: token, AuthMode: mode, HTTP: &http.Client{Timeout: 30 * time.Second}, MaxReadAttempts: 4}, nil
 }
@@ -63,6 +76,13 @@ type Issue struct {
 	State       string    `json:"state"`
 	WebURL      string    `json:"web_url"`
 	UpdatedAt   time.Time `json:"updated_at"`
+}
+
+func (c *Client) FindIssues(ctx context.Context, projectID int64, search string) ([]Issue, error) {
+	q := url.Values{"scope": {"all"}, "state": {"all"}, "search": {search}, "per_page": {"100"}}
+	var out []Issue
+	err := c.get(ctx, fmt.Sprintf("/api/v4/projects/%d/issues", projectID), q, &out)
+	return out, err
 }
 
 // CreateIssueRequest 是工程就绪包同步到 GitLab Issue 的最小请求。
@@ -108,6 +128,27 @@ type Branch struct {
 	} `json:"commit"`
 	Protected bool `json:"protected"`
 }
+
+// RepositoryFile 是 GitLab Repository Files API 的可对账视图。
+type RepositoryFile struct {
+	FilePath     string `json:"file_path"`
+	CommitID     string `json:"commit_id"`
+	LastCommitID string `json:"last_commit_id"`
+	BlobID       string `json:"blob_id"`
+	Encoding     string `json:"encoding"`
+	Content      string `json:"content"`
+}
+
+func (c *Client) GetFile(ctx context.Context, projectID int64, filePath, ref string) (RepositoryFile, error) {
+	var out RepositoryFile
+	err := c.get(ctx,
+		fmt.Sprintf("/api/v4/projects/%d/repository/files/%s", projectID, url.PathEscape(filePath)),
+		url.Values{"ref": {ref}},
+		&out,
+	)
+	return out, err
+}
+
 type MergeRequest struct {
 	ID           int64     `json:"id"`
 	IID          int64     `json:"iid"`
@@ -351,10 +392,13 @@ func (c *Client) do(ctx context.Context, method, path string, q url.Values, body
 	default:
 		req.Header.Set("PRIVATE-TOKEN", c.Token)
 	}
-	client := c.HTTP
-	if client == nil {
-		client = &http.Client{Timeout: 30 * time.Second}
+	baseClient := c.HTTP
+	if baseClient == nil {
+		baseClient = &http.Client{Timeout: 30 * time.Second}
 	}
+	// 禁止自动跟随重定向，避免 PRIVATE-TOKEN/JOB-TOKEN 被 3xx 转发到非预期主机。
+	client := *baseClient
+	client.CheckRedirect = func(_ *http.Request, _ []*http.Request) error { return http.ErrUseLastResponse }
 	resp, err := client.Do(req)
 	if err != nil {
 		return fmt.Errorf("GitLab API 请求失败: %w", err), 0
@@ -365,7 +409,7 @@ func (c *Client) do(ctx context.Context, method, path string, q url.Values, body
 		return err, 0
 	}
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return &HTTPError{Status: resp.StatusCode, Method: method, Path: path, Body: safeBody(data)}, parseRetryAfter(resp.Header.Get("Retry-After"))
+		return &HTTPError{Status: resp.StatusCode, Method: method, Path: path, Body: safeBody(data, c.Token)}, parseRetryAfter(resp.Header.Get("Retry-After"))
 	}
 	if out != nil && len(data) > 0 {
 		if err := json.Unmarshal(data, out); err != nil {
@@ -383,8 +427,15 @@ type HTTPError struct {
 func (e *HTTPError) Error() string {
 	return fmt.Sprintf("GitLab API %s %s 返回 HTTP %d: %s", e.Method, e.Path, e.Status, e.Body)
 }
-func safeBody(v []byte) string {
+
+var providerSecretPattern = regexp.MustCompile(`(?i)((?:private[-_ ]?token|job[-_ ]?token|authorization|access[_-]?token|api[_-]?key)["']?\s*[:=]\s*["']?)[^"',\s}]+`)
+
+func safeBody(v []byte, exactToken string) string {
 	s := strings.TrimSpace(string(v))
+	if exactToken != "" {
+		s = strings.ReplaceAll(s, exactToken, "[REDACTED]")
+	}
+	s = providerSecretPattern.ReplaceAllString(s, "${1}[REDACTED]")
 	if len(s) > 2048 {
 		s = s[:2048] + "…"
 	}

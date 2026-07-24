@@ -1,0 +1,26 @@
+name: 能力建议
+description: 提议产品、工程或研究方向
+title: "[Proposal] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 真实问题
+      description: 描述用户、场景、约束与当前损失，不要只描述解决方案。
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: 可验证结果
+      description: 给出可度量的产品、技术或安全验收标准。
+    validations:
+      required: true
+  - type: textarea
+    id: safety
+    attributes:
+      label: 安全与兼容性影响
+      description: 说明租户隔离、审批、证据、外部写入、升级和回滚影响。
+    validations:
+      required: true

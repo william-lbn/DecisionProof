@@ -1,0 +1,10 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DecisionProof 产品工作台</title><link rel="stylesheet" href="styles.css"></head><body>
+<header><div><h1>DecisionProof</h1><p>产品决策到生产结果的可信闭环平台</p></div><span class="badge">V2 工程底座</span></header>
+<main>
+<section class="card identity"><h2>开发环境身份</h2><div class="grid"><label>租户<input id="tenant" value="tenant-demo"></label><label>当前操作者<input id="actor" value="product-manager"></label><label>项目<input id="project" value="project-demo"></label></div><p class="hint">生产环境必须替换为 GitLab OAuth/OIDC。确认人与批准人必须不同，批准前请切换“当前操作者”。</p></section>
+<section class="card"><h2>1. 导入现有产品资料</h2><form id="upload"><input id="file" type="file" accept=".md,.txt,.docx,.pptx" required><button>上传并解析</button></form><p class="hint">平台保留原始资料摘要和页、段落、幻灯片来源锚点；不会只保存 AI 摘要。</p><pre id="documentResult"></pre></section>
+<section class="card"><h2>2. AI/规则结构化提取</h2><div class="row"><input id="documentId" placeholder="文档 ID"><button id="extract">执行提取</button><button id="refresh" class="secondary">刷新决策</button></div><div id="decisions" class="list"></div></section>
+<section class="card"><h2>3. 手工补充产品决策</h2><div class="grid"><label>类型<select id="manualKind"><option>REQUIREMENT</option><option>ACCEPTANCE_CRITERION</option><option>OUTCOME_CONTRACT</option><option>PRODUCT_OBJECTIVE</option><option>BUSINESS_CASE</option><option>RISK</option><option>ARCHITECTURE_DECISION</option><option>OUT_OF_SCOPE</option></select></label><label>标题<input id="manualTitle" placeholder="简明标题"></label><label>内容<textarea id="manualContent" placeholder="输入可批准、可验证的完整内容"></textarea></label></div><button id="manualCreate">创建人工确认决策</button></section>
+<section class="card"><h2>4. 生成工程就绪包</h2><button id="package">生成不可变工程基线</button><pre id="packageResult"></pre></section>
+<section class="card"><h2>一期工程闭环</h2><ol><li>产品资料、来源锚点和人工决策</li><li>工程就绪包与 GitLab Issue/MR</li><li>CI 测试、安全、SBOM、签名和 Provenance</li><li>GitOps、Argo 灰度和自动回滚</li><li>Outcome Contract 与业务结果审计</li></ol></section>
+</main><script src="app.js"></script></body></html>

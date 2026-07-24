@@ -1,0 +1,63 @@
+# DecisionProof 自身仓库的 GitLab CI。
+# 本文件只验证当前仓库能在标准 Go 环境中格式化、测试、数据竞争检查和构建；
+# 软件供应链签名、SBOM 和 Kubernetes E2E 将在后续真实 GitLab/集群阶段接入。
+
+stages:
+  - validate
+  - test
+  - build
+
+variables:
+  GOTOOLCHAIN: "local"
+  GOMODCACHE: "$CI_PROJECT_DIR/.cache/gomod"
+  GOCACHE: "$CI_PROJECT_DIR/.cache/gobuild"
+
+.go_job:
+  image: golang:1.23.12-bookworm@sha256:167053a2bb901972bf2c1611f8f52c44d5fe7e762e5cab213708d82c421614db
+  cache:
+    key: "go-${CI_COMMIT_REF_SLUG}"
+    paths:
+      - .cache/gomod
+      - .cache/gobuild
+  before_script:
+    - go version
+
+format_vet:
+  extends: .go_job
+  stage: validate
+  script:
+    - test -z "$(gofmt -l .)" || { echo "存在未格式化 Go 文件"; gofmt -l .; exit 1; }
+    - go vet ./...
+    - ./scripts/check-docs.sh
+
+unit_test:
+  extends: .go_job
+  stage: test
+  script:
+    - go test -covermode=atomic -coverprofile=coverage.out ./...
+    - go tool cover -func=coverage.out | tee coverage.txt
+  artifacts:
+    when: always
+    expire_in: 14 days
+    paths:
+      - coverage.out
+      - coverage.txt
+
+race_test:
+  extends: .go_job
+  stage: test
+  script:
+    - go test -race ./...
+
+build:
+  extends: .go_job
+  stage: build
+  script:
+    - make build
+    - ./bin/demo > validation/core-demo.json
+    - ./bin/product-demo > validation/product-demo.json
+  artifacts:
+    expire_in: 14 days
+    paths:
+      - bin/
+      - validation/

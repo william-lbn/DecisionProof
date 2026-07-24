@@ -1,0 +1,6 @@
+apiVersion: v2
+name: decisionproof
+version: 0.3.0
+appVersion: "0.3.0"
+description: DecisionProof V2 PostgreSQL 单节点实验 Chart；生产多副本仍需对象存储、身份、Temporal、HA 和灾备。
+type: application

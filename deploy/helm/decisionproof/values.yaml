@@ -1,0 +1,67 @@
+replicaCount: 1
+
+image:
+  repository: registry.example/decisionproof/control-api
+  digest: ""
+  pullPolicy: IfNotPresent
+
+service:
+  port: 8080
+
+storage:
+  # file 仅用于单节点演示；postgres 会接通核心和产品元数据，但上传对象仍在本地 PVC。
+  mode: file
+
+database:
+  # API 使用非超级用户账号；迁移可单独引用受控管理员 Secret。
+  existingSecret: ""
+  migrationExistingSecret: ""
+  urlKey: database-url
+  migrateOnDeploy: true
+
+ingress:
+  enabled: false
+  className: ""
+  host: decisionproof.example.com
+  tlsSecretName: ""
+
+persistence:
+  enabled: true
+  storageClassName: ""
+  size: 10Gi
+
+existingSigningSecret: decisionproof-signing
+existingGitLabWebhookSecret: ""
+
+gitlab:
+  tenantID: ""
+  integrationID: gitlab-default
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 256Mi
+  limits:
+    cpu: "2"
+    memory: 1Gi
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 65532
+  runAsGroup: 65532
+  fsGroup: 65532
+  fsGroupChangePolicy: OnRootMismatch
+  seccompProfile:
+    type: RuntimeDefault
+
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop: ["ALL"]
+
+networkPolicy:
+  enabled: true
+
+# 本地多节点实验时可把工作负载固定到已就绪节点；生产应使用稳定的节点标签。
+nodeSelector: {}

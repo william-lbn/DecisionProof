@@ -1,0 +1,33 @@
+name: 缺陷报告
+description: 报告可复现的非安全问题
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: 安全漏洞、Token、私钥、客户代码或真实生产地址不得写入公开 Issue，请先阅读 SECURITY.md。
+  - type: textarea
+    id: version
+    attributes:
+      label: 版本与精确提交
+      description: 请提供版本、Commit SHA、部署模式和 Kubernetes/Go 版本。
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: 最小复现步骤
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望结果
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际结果与已脱敏证据
+    validations:
+      required: true

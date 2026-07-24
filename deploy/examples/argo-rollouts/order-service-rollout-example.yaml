@@ -1,0 +1,52 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: order-service
+spec:
+  replicas: 6
+  selector:
+    matchLabels: {app: order-service}
+  template:
+    metadata:
+      labels: {app: order-service}
+    spec:
+      containers:
+        - name: app
+          image: harbor.example/order-service@sha256:REPLACE_ME
+          ports: [{containerPort: 8080}]
+  strategy:
+    canary:
+      stableService: order-service-stable
+      canaryService: order-service-canary
+      steps:
+        - setWeight: 5
+        - pause: {duration: 5m}
+        - analysis:
+            templates:
+              - templateName: order-service-slo
+        - setWeight: 25
+        - pause: {duration: 10m}
+        - analysis:
+            templates:
+              - templateName: order-service-slo
+        - setWeight: 50
+        - pause: {duration: 10m}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: order-service-slo
+spec:
+  metrics:
+    - name: success-rate
+      interval: 1m
+      count: 5
+      successCondition: result[0] >= 0.995
+      failureLimit: 2
+      provider:
+        prometheus:
+          address: http://prometheus.monitoring.svc:9090
+          query: |
+            sum(rate(http_requests_total{service="order-service",status!~"5.."}[2m]))
+            /
+            sum(rate(http_requests_total{service="order-service"}[2m]))

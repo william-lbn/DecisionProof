@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://decisionproof.local/schemas/v2/release-manifest.schema.json",
+  "title": "Release Evidence Manifest V2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["api_version", "kind", "release_id", "change_id", "attempt", "source", "artifact", "verification", "policy", "integrity"],
+  "properties": {
+    "api_version": {"const": "evidence.decisionproof.io/v1beta1"},
+    "kind": {"const": "ReleaseEvidenceManifest"},
+    "release_id": {"type": "string"},
+    "change_id": {"type": "string"},
+    "attempt": {"type": "integer", "minimum": 1},
+    "source": {
+      "type": "object",
+      "required": ["gitlab_project_id", "commit_sha"],
+      "properties": {
+        "gitlab_project_id": {"type": "integer"},
+        "merge_request_iid": {"type": "integer"},
+        "commit_sha": {"type": "string", "minLength": 7}
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "required": ["repository", "digest"],
+      "properties": {
+        "repository": {"type": "string"},
+        "digest": {"type": "string", "pattern": "^sha256:"}
+      }
+    },
+    "verification": {
+      "type": "object",
+      "required": ["evidence_ids", "sbom_digest", "provenance_digest", "signature_bundle_digest"],
+      "properties": {
+        "evidence_ids": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "sbom_digest": {"type": "string", "pattern": "^sha256:"},
+        "provenance_digest": {"type": "string", "pattern": "^sha256:"},
+        "signature_bundle_digest": {"type": "string", "pattern": "^sha256:"}
+      }
+    },
+    "policy": {
+      "type": "object",
+      "required": ["bundle_digest", "decision_digest", "verdict"],
+      "properties": {
+        "bundle_digest": {"type": "string", "pattern": "^sha256:"},
+        "decision_digest": {"type": "string", "pattern": "^sha256:"},
+        "verdict": {"const": "ALLOW"}
+      }
+    },
+    "deployment": {
+      "type": "object",
+      "properties": {
+        "environment": {"type": "string"},
+        "strategy": {"type": "string", "enum": ["CANARY", "BLUE_GREEN"]},
+        "gitops_commit_sha": {"type": "string"}
+      }
+    },
+    "outcome_contract_digest": {"type": "string", "pattern": "^sha256:"},
+    "integrity": {
+      "type": "object",
+      "required": ["manifest_digest", "signing_key_id", "signature"],
+      "properties": {
+        "manifest_digest": {"type": "string", "pattern": "^sha256:"},
+        "signing_key_id": {"type": "string"},
+        "signature": {"type": "string"},
+        "signature_bundle_uri": {"type": "string"}
+      }
+    }
+  }
+}

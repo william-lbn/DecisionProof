@@ -1,0 +1,31 @@
+{{- if .Values.networkPolicy.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "decisionproof.fullname" . }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "decisionproof.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  policyTypes: ["Ingress", "Egress"]
+  ingress:
+    - ports:
+        - protocol: TCP
+          port: 8080
+  egress:
+    - to:
+        - namespaceSelector: {}
+      ports:
+        - {protocol: UDP, port: 53}
+        - {protocol: TCP, port: 53}
+    {{- if eq .Values.storage.mode "postgres" }}
+    # 单 namespace 实验允许访问本 namespace 的 PostgreSQL 端口。
+    # 外部数据库场景必须按真实 CIDR/网关另行收敛，不能直接放开全部出口。
+    - to:
+        - podSelector: {}
+      ports:
+        - {protocol: TCP, port: 5432}
+    {{- end }}
+    # 真实环境必须把 GitLab、模型服务、对象存储和数据库出口收敛到明确 CIDR/Namespace。
+{{- end }}

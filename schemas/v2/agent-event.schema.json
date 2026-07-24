@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://decisionproof.local/schemas/v2/agent-event.schema.json",
+  "title": "Agent 可审计事件",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["run_id", "sequence", "event_type", "timestamp", "payload"],
+  "properties": {
+    "run_id": {"type": "string"},
+    "sequence": {"type": "integer", "minimum": 1},
+    "event_type": {
+      "type": "string",
+      "enum": ["run.started", "model.requested", "model.responded", "tool.requested", "tool.completed", "file.changed", "test.completed", "commit.created", "mr.created", "run.completed", "run.failed"]
+    },
+    "timestamp": {"type": "string", "format": "date-time"},
+    "payload": {"type": "object"}
+  }
+}

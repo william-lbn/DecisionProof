@@ -1,0 +1,786 @@
+{
+  "date": "2026-07-24",
+  "description": "产品决策到生产结果的可信闭环平台工程底座",
+  "files": [
+    {
+      "path": ".dockerignore",
+      "bytes": 57,
+      "sha256": "2c14d588ef6bb0a4ab1c23cee8cf9f2d1311d61deff1ed0ac85813c1587d37f2"
+    },
+    {
+      "path": ".editorconfig",
+      "bytes": 248,
+      "sha256": "5702f631a2507c5a9e148d34c27c4aeae742894fb961a7cb8a6f6e08fda29b0a"
+    },
+    {
+      "path": ".gitattributes",
+      "bytes": 239,
+      "sha256": "8d919d5bf16ad03bed1073847de5871d964def3a3b2a72218ee9111068943390"
+    },
+    {
+      "path": ".github/CODEOWNERS",
+      "bytes": 15,
+      "sha256": "8f4bdf4f1bc2246aca00bfaf2e4fffebbab130197ae8d3ef009ac3cb5932837b"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
+      "bytes": 857,
+      "sha256": "b290e0323c059e84f838572f0b14ed2e0ea63da253d036b71b25ef471e240666"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/config.yml",
+      "bytes": 28,
+      "sha256": "1f103c6a9dd07cd13a9a6f17ace6b813f47747eb9cb7e00488cb2073caaf91bb"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/feature_request.yml",
+      "bytes": 752,
+      "sha256": "9ac7eb33cd2d0e91e7ba9a77517d19a147eaaf65819d560236b7a5b0c9acd120"
+    },
+    {
+      "path": ".github/dependabot.yml",
+      "bytes": 390,
+      "sha256": "890a8d46ce4228459e72195b10827acf93b895cf556ad581831991a1f55ff1ad"
+    },
+    {
+      "path": ".github/pull_request_template.md",
+      "bytes": 809,
+      "sha256": "0cb8ab61e7288e833c5253a0a508f9330e305bddc5f8f6b7bf6206794c84a124"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "bytes": 1444,
+      "sha256": "44616910a53e8946751b38737041d3f595bbd4c48ffc3871f116e87da8bb311e"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 330,
+      "sha256": "47e43a8bc3451e9464e336467fb279c56b1ddb6684a1133869df0f7b00442ed8"
+    },
+    {
+      "path": ".gitlab-ci.yml",
+      "bytes": 1484,
+      "sha256": "81adf74937f46c83fab577846d6662d423b02996f5d5832b1aff1a12eab712ab"
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 2149,
+      "sha256": "393e11899334975466e11cb278a80cbcbdb7364154ad772646649e21808b11c5"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "bytes": 2397,
+      "sha256": "ba40e792e0d885bd68a755ff0777a95bb18d3458e5ccff4e46eb03c300d110a4"
+    },
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "bytes": 1246,
+      "sha256": "f10486dd260c0dcdb5ccb43c629028d9b68ee4cd4c5efa62d952e0a020021ab3"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "bytes": 1606,
+      "sha256": "255bef1db4892ef7d8006e9f128b9de406ec41f17165b8729949a1d5b4d2043c"
+    },
+    {
+      "path": "DELIVERY.md",
+      "bytes": 1949,
+      "sha256": "7671b2eec8a80528f14aa3fbff7eda911ec45e74d0e4e6aae569e9b32e0fbbab"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "Makefile",
+      "bytes": 711,
+      "sha256": "0b4fd7e0fc90fd33bbaad570ed46ad998edeb18f3e0b22b7206490f5beebb8c3"
+    },
+    {
+      "path": "PLANS.md",
+      "bytes": 731,
+      "sha256": "22a333e0d0e420a21218cc1cf22d33157986ad9f030ba653bcf86ef945c472c9"
+    },
+    {
+      "path": "README.md",
+      "bytes": 5041,
+      "sha256": "b9b42d620cd1b15bb8e70d473a9a204d42b66aa8c83e619861204cf125bff250"
+    },
+    {
+      "path": "SECURITY.md",
+      "bytes": 1129,
+      "sha256": "610e67496ced52c7d7a09ba6c4c32a729ca9c32104afd11c581eaa8a5cafe305"
+    },
+    {
+      "path": "cmd/control-api/main.go",
+      "bytes": 7604,
+      "sha256": "7e2f8ab1bdc305e3c40a16e0b59c09a5a1747f456d5b7e81853cdbc400339cce"
+    },
+    {
+      "path": "cmd/demo/main.go",
+      "bytes": 6439,
+      "sha256": "b984f6ea34b2196030b7b01103eaf8f2b021452d5a54ffc56752c9db7306877f"
+    },
+    {
+      "path": "cmd/migrate/main.go",
+      "bytes": 905,
+      "sha256": "d7a31e02781b76b8313db7b55e26e94b62135fd011cb0a1750bdec430d42510c"
+    },
+    {
+      "path": "cmd/product-demo/main.go",
+      "bytes": 2542,
+      "sha256": "f0c2ce7dfbc0219c04cd52aa555e894a8943f536277d9e8786b695a18c65563e"
+    },
+    {
+      "path": "deploy/docker/Dockerfile",
+      "bytes": 1224,
+      "sha256": "acd9b170831d0044375b09ffc9ade17ea2ec1144beacf98718b74582ed8ab28f"
+    },
+    {
+      "path": "deploy/examples/argo-rollouts/order-service-rollout-example.yaml",
+      "bytes": 1356,
+      "sha256": "65622884e26fcc3d673289adbfee0ac107da8af641c1c7108c8fea06ea4ebf12"
+    },
+    {
+      "path": "deploy/examples/postgres/README.md",
+      "bytes": 1409,
+      "sha256": "54807d3f27e9f0d849b9d723d01c0738d1eab5ddf0350f4d193fdab4c3b2a07b"
+    },
+    {
+      "path": "deploy/examples/postgres/experimental-postgres.yaml",
+      "bytes": 3812,
+      "sha256": "a24ddc9186dd0abcc302aa414c9c55be78f0714728110db48b58422d8ba2d668"
+    },
+    {
+      "path": "deploy/helm/decisionproof/Chart.yaml",
+      "bytes": 225,
+      "sha256": "ad2a452500a1abbcde19b97071b109da127115caf3689a258491beb1930afd2f"
+    },
+    {
+      "path": "deploy/helm/decisionproof/README.md",
+      "bytes": 803,
+      "sha256": "4882ba7a16383fd970b81089093cc6e25e41189fc24f10b14ffbd7c596d90444"
+    },
+    {
+      "path": "deploy/helm/decisionproof/templates/_helpers.tpl",
+      "bytes": 415,
+      "sha256": "80dfad46423529bb7368f840c6e87893c327b2ae55199a9162db29b3baceab02"
+    },
+    {
+      "path": "deploy/helm/decisionproof/templates/deployment.yaml",
+      "bytes": 4518,
+      "sha256": "e07268537d6301932874b7467f6d959eb866be34b9a0237c645600eb4a291401"
+    },
+    {
+      "path": "deploy/helm/decisionproof/templates/networkpolicy.yaml",
+      "bytes": 1012,
+      "sha256": "686a6f8454460645242828773b3adb0de4972aac1ae5db415225adac8eea2d7d"
+    },
+    {
+      "path": "deploy/helm/decisionproof/templates/pvc.yaml",
+      "bytes": 401,
+      "sha256": "1032dba0d689d75cc0c9a945aa9460f67bdb627bfe087bbcc6eab8ac5e8d01f5"
+    },
+    {
+      "path": "deploy/helm/decisionproof/templates/service.yaml",
+      "bytes": 377,
+      "sha256": "23a0be9d89efd5ed29021048f45954a1462025920e9c5fc8b30272ee9bbfc62d"
+    },
+    {
+      "path": "deploy/helm/decisionproof/templates/serviceaccount.yaml",
+      "bytes": 197,
+      "sha256": "889259f803307c94e0a59b91098cd07ffa135b81dfdcb5cde233b52a230d7ca3"
+    },
+    {
+      "path": "deploy/helm/decisionproof/values.schema.json",
+      "bytes": 1408,
+      "sha256": "19f5d94a8c19c39e64bcd00ed0b1aaa6e1b58a90c184b118c505b9fee2fc192b"
+    },
+    {
+      "path": "deploy/helm/decisionproof/values.yaml",
+      "bytes": 1335,
+      "sha256": "b31462190cb939437dead8c48933391b63bf049606692f355390c8b920eaaa3d"
+    },
+    {
+      "path": "docs/00_产品架构与研发总纲.md",
+      "bytes": 4409,
+      "sha256": "619170141a2574f22fc967801dbc16c804b98f18c790af5f38c856735c28a344"
+    },
+    {
+      "path": "docs/01_产品体验与商业闭环.md",
+      "bytes": 2814,
+      "sha256": "ae173ae64c9d879f83c6675c22241d3ba296cf138e0ea93e662a536a7eb50a03"
+    },
+    {
+      "path": "docs/02_端到端流程与状态模型.md",
+      "bytes": 1731,
+      "sha256": "eb3ed5b658b77b9b3010c2fab5f8590a0afa2ae1c513d1163ab6bc96bf0d971e"
+    },
+    {
+      "path": "docs/03_系统架构与前沿AI工程.md",
+      "bytes": 2252,
+      "sha256": "54a0f825aca72a24000554ef5e1b7a05d5fd8da8271c70156f1a272f94c1a5eb"
+    },
+    {
+      "path": "docs/04_GitLab一期集成.md",
+      "bytes": 1152,
+      "sha256": "94e60fed5230115f816094f54ed9b2de020cd320893939dbb50b9ae649600def"
+    },
+    {
+      "path": "docs/05_安全_证据与供应链.md",
+      "bytes": 1451,
+      "sha256": "eec618748d4e092e4177f8b6252e2d1614eb21b4d21d0673890101d5b83de3d2"
+    },
+    {
+      "path": "docs/06_研发计划_Codex任务.md",
+      "bytes": 1974,
+      "sha256": "8d070b0853f88db4889487e0f7705f677ba8600ca861f666917e93a992bfedd6"
+    },
+    {
+      "path": "docs/07_验证计划与生产验收.md",
+      "bytes": 1508,
+      "sha256": "cee882acd7a1fca3ca40e21fb3773a444679e4b7c4d75b7ebac5a3c7fb69314d"
+    },
+    {
+      "path": "docs/08_演进路线与竞争壁垒.md",
+      "bytes": 981,
+      "sha256": "1e0a3ba985b0182b69b6019b461e45ea1a5314cbdff5df7ff058668eee4bc3c1"
+    },
+    {
+      "path": "docs/09_前沿产品能力与商业演进.md",
+      "bytes": 5070,
+      "sha256": "2bf8140cf763086e4e235444f749211dc66a6223c1b77d82f70bd01e7d351721"
+    },
+    {
+      "path": "docs/10_外部技术依据与架构判断.md",
+      "bytes": 4466,
+      "sha256": "c4abe38e8c387ffda6b1f1f2bd6cb78ef35cbef4f8098b2e96ec031500700593"
+    },
+    {
+      "path": "docs/11_全面审计与端到端实施计划.md",
+      "bytes": 11792,
+      "sha256": "f63e0ac39c2bd2bdfaec99afcc7cd05627bd13c77170ded49f20d69579074025"
+    },
+    {
+      "path": "docs/12_实验部署与使用手册.md",
+      "bytes": 9074,
+      "sha256": "d45f88288596240a73109be1307ff086a51320d6c46faf93656cd52258d0aff4"
+    },
+    {
+      "path": "docs/IMPLEMENTATION_STATUS.md",
+      "bytes": 3020,
+      "sha256": "d9daaca1790976a2d68facf974b4ea6558784ece4b022896c178ee511ec07bb7"
+    },
+    {
+      "path": "go.mod",
+      "bytes": 421,
+      "sha256": "2ae42d75b7dca4b941e452e3bac65d5ab6ab78b5239b215a9eb60357b8844287"
+    },
+    {
+      "path": "go.sum",
+      "bytes": 2456,
+      "sha256": "4e7e05768d607a1cc09d1dbe92d138751e9111200e8eadf2be5d7c99b189e834"
+    },
+    {
+      "path": "internal/agent/cli.go",
+      "bytes": 5332,
+      "sha256": "614aacf249cb327d395428f825caf251dec340114470231be2bfd14f27e98c7a"
+    },
+    {
+      "path": "internal/agent/cli_test.go",
+      "bytes": 1954,
+      "sha256": "619dd691a1fa461624b5ebb66229fe1f13423b58554a8630182f0ce9dcf3d973"
+    },
+    {
+      "path": "internal/agent/process_unix.go",
+      "bytes": 495,
+      "sha256": "8683b51168f5b16c0745370dc2d733513923d946934601cd5f5b9ccc868715f7"
+    },
+    {
+      "path": "internal/agent/process_windows.go",
+      "bytes": 191,
+      "sha256": "3db902e9f1e6eef0abef8de5dd5aa87a88e97e69a7ed365e7104cb0c3f5152a4"
+    },
+    {
+      "path": "internal/agent/provider.go",
+      "bytes": 2331,
+      "sha256": "f1de38d54580003a0f50bc2c1a6fa46d16ae50aa6fd4b7e0e4ed4821b648a78c"
+    },
+    {
+      "path": "internal/ai/heuristic.go",
+      "bytes": 3621,
+      "sha256": "e4445de109a8437cf14b260372073a6ef8fb975f7c5be0a3f02f43d518d85777"
+    },
+    {
+      "path": "internal/ai/httpjson.go",
+      "bytes": 2346,
+      "sha256": "7e28fc3f741e3e2119cdb5b7e9f7bd9cfebeed86f21e48f972ef12d62e02fb21"
+    },
+    {
+      "path": "internal/ai/httpjson_test.go",
+      "bytes": 1685,
+      "sha256": "0f1393dbef0f74ef650293d12dd1c11909249969719ea16cd3ac2eff8f2673e9"
+    },
+    {
+      "path": "internal/assurance/agent_release.go",
+      "bytes": 7323,
+      "sha256": "e27de649e209c6462cf1409b59a5d78c77caae4ecdc47753f82af1f82b60db80"
+    },
+    {
+      "path": "internal/assurance/agent_release_test.go",
+      "bytes": 2776,
+      "sha256": "08f2bab26a8ac3d5faa7ea4d200327978b23229a2868b1fe7ba71dad7ae9264d"
+    },
+    {
+      "path": "internal/assurance/outcome.go",
+      "bytes": 2381,
+      "sha256": "d4b10ac71e6c7f23792b0bd10e6e4a1585ba6623e12d918896a6496cb600fe4c"
+    },
+    {
+      "path": "internal/assurance/outcome_test.go",
+      "bytes": 897,
+      "sha256": "f559ce102150cefe0ba1876810c78ef6db1c74c71682475c9d3e2c33e14545cc"
+    },
+    {
+      "path": "internal/assurance/qualifier.go",
+      "bytes": 2863,
+      "sha256": "83fa84ccf0d72b15cd1a7fe04503e0114422be5fab13987b7ffd22e687eb3d6e"
+    },
+    {
+      "path": "internal/assurance/qualifier_test.go",
+      "bytes": 1309,
+      "sha256": "c9d86b004520c1ff826c4651cc3cb985aa97489e2198876919f312d0c3155226"
+    },
+    {
+      "path": "internal/database/migrate.go",
+      "bytes": 3283,
+      "sha256": "b5e1de543f24e34658d66d4593887cbe903bf40aa2f65e42c46eefee3cbeaef2"
+    },
+    {
+      "path": "internal/database/postgres_truth_test.go",
+      "bytes": 4015,
+      "sha256": "3c4ca2694de61af68f630d866ec0cd113e9a9daa9ab923a7632cb20f0930f158"
+    },
+    {
+      "path": "internal/delivery/engineering_bundle.go",
+      "bytes": 5820,
+      "sha256": "b013a860162813eb2ff885a349084131a5b66797cf41f9fc60dc54c93788b2f3"
+    },
+    {
+      "path": "internal/delivery/engineering_bundle_test.go",
+      "bytes": 1707,
+      "sha256": "f6f01c48c1e11d5c50fb50308ab35d547a21f7880add812b4c739a9b5af02867"
+    },
+    {
+      "path": "internal/document/extract.go",
+      "bytes": 6630,
+      "sha256": "f6977164dab1c10bc3b4cf47fc50a1c84b30372586e5881b6b2713cf1a52c82a"
+    },
+    {
+      "path": "internal/document/extract_test.go",
+      "bytes": 1792,
+      "sha256": "8408f452eea48039ffa71f74764fd505b67bf84a2887ca36a53334ee10a132dd"
+    },
+    {
+      "path": "internal/domain/action.go",
+      "bytes": 2251,
+      "sha256": "9a1a9935cdadcdb72a8f734d621f72d70d14300dc6a37c0fe223a51da244180c"
+    },
+    {
+      "path": "internal/domain/change.go",
+      "bytes": 1701,
+      "sha256": "ef502739a21704b7ab03ba5b4ee87507dd51cbd8a1b44a96d19538a68cad5ebb"
+    },
+    {
+      "path": "internal/domain/errors.go",
+      "bytes": 476,
+      "sha256": "39873bbc6ea9ab68e25ac43229fb20486bb4b7f54eca0f1940252e84fb4fde8d"
+    },
+    {
+      "path": "internal/domain/evidence.go",
+      "bytes": 4769,
+      "sha256": "812c4dbc2276a7ee57a0e71bbeb5c76f5735e70832ea7536832a0e76b74aa491"
+    },
+    {
+      "path": "internal/domain/id.go",
+      "bytes": 441,
+      "sha256": "119e572eaa29c20a7805d2dac7393da5c0dd6b86f2bbc70477fd62a92ed27c3a"
+    },
+    {
+      "path": "internal/domain/release.go",
+      "bytes": 1415,
+      "sha256": "91a732bcbdd9df1fcf2599407a6742560dfbf8a508067ac42991f01787025329"
+    },
+    {
+      "path": "internal/domain/state.go",
+      "bytes": 2232,
+      "sha256": "621e02498b2a3f690e636a76691469c4938b6dc10c8754c409fbeb1a477bdb1b"
+    },
+    {
+      "path": "internal/domain/state_test.go",
+      "bytes": 1177,
+      "sha256": "264852b962cbbf2fa343e182751aa4821910dde4c84e4f82d73a73a43b6846de"
+    },
+    {
+      "path": "internal/executor/executor.go",
+      "bytes": 926,
+      "sha256": "f93b31b9a44aebf4bd877662d248015190e86bf43bb2505cf9e1625a662124fd"
+    },
+    {
+      "path": "internal/executor/local.go",
+      "bytes": 2667,
+      "sha256": "c269ae2765ec936a1833a046478c5cbc6737e1232125847057ec512efd1c9bc1"
+    },
+    {
+      "path": "internal/httpapi/auth.go",
+      "bytes": 1258,
+      "sha256": "323817c7f8a48a4ff18fd0bc39d811d32ff8b8c672cae7314159406093ead34c"
+    },
+    {
+      "path": "internal/httpapi/server.go",
+      "bytes": 10346,
+      "sha256": "3630d8c3635a0521455d31bc62f6f8b98761991a8519ceb44952748833e431dd"
+    },
+    {
+      "path": "internal/httpapi/server_test.go",
+      "bytes": 3885,
+      "sha256": "69f8de100b6b0845db51cd595c04412c45eed41d0db7cf955f17266b80ccc5c2"
+    },
+    {
+      "path": "internal/integrations/gitlab/client.go",
+      "bytes": 12866,
+      "sha256": "f1066876d15f2e1d45e7fffc51f0319ea4bc5307e045b36a017cd1472382a558"
+    },
+    {
+      "path": "internal/integrations/gitlab/client_test.go",
+      "bytes": 1787,
+      "sha256": "92acacfb07447e254ca8a0209a0b5079d95cbc6cb754d3efc0dcfd8c29ea900e"
+    },
+    {
+      "path": "internal/integrations/gitlab/inbox.go",
+      "bytes": 6628,
+      "sha256": "20a39a763dc550e2282c24980c30a27382268a9232d05a1c7dfa360dcf347e1b"
+    },
+    {
+      "path": "internal/integrations/gitlab/postgres_inbox.go",
+      "bytes": 5225,
+      "sha256": "f614b4fd37786ca2eb0c70e69a5f73b2dc64dd0ac9381ef017193b9ffebb17d1"
+    },
+    {
+      "path": "internal/integrations/gitlab/postgres_inbox_truth_test.go",
+      "bytes": 1737,
+      "sha256": "88badf3e21887f684868e235dc33348afa22f47e68450f98cf6db2dd8a6cfc12"
+    },
+    {
+      "path": "internal/integrations/gitlab/webhook.go",
+      "bytes": 2214,
+      "sha256": "9ee59906b3e0ac8318d1e2d8fead0aba1c2b03dd4f7005f4e77d8ef4915aa716"
+    },
+    {
+      "path": "internal/integrations/gitlab/webhook_handler.go",
+      "bytes": 4402,
+      "sha256": "f05016e8459e8e4d7bfdfb8a5f1cdb95448169747a618581e3556db39e9a1a55"
+    },
+    {
+      "path": "internal/integrations/gitlab/webhook_handler_test.go",
+      "bytes": 4398,
+      "sha256": "e07c2b5bd300b0953b1141253e7c0f59ae9ddfcc9db81afb08d3c3fad191defc"
+    },
+    {
+      "path": "internal/integrations/prometheus/client.go",
+      "bytes": 2618,
+      "sha256": "b2c7ab334cf004531a32fd9f9231ebe11b86477e2cd61d9e0c6892ed98c58694"
+    },
+    {
+      "path": "internal/integrations/prometheus/client_test.go",
+      "bytes": 574,
+      "sha256": "f70c5fc193bafdffd20f32625cf2dad2af398f74a0738169877adcc7f22f20ed"
+    },
+    {
+      "path": "internal/integrity/digest.go",
+      "bytes": 872,
+      "sha256": "a135aed07788944e8b7c14c2b037658d7c1db051ab8d36ed96231d56ef33ebb5"
+    },
+    {
+      "path": "internal/integrity/hash_test.go",
+      "bytes": 596,
+      "sha256": "5413f5607d92a074dc74d391a5a0638b13786aac41fa2ac7235fffefba6e32be"
+    },
+    {
+      "path": "internal/product/file_repository.go",
+      "bytes": 5880,
+      "sha256": "d433f732f5c75575e82128cc096847dc628a3fc4a3d5ce5ca5555f5d44120858"
+    },
+    {
+      "path": "internal/product/file_repository_test.go",
+      "bytes": 1081,
+      "sha256": "46d03b9af808bf77f35146143097dd18227ede70ffb35084ed92adda53125398"
+    },
+    {
+      "path": "internal/product/model.go",
+      "bytes": 7425,
+      "sha256": "bf42bb2a9f1f6adf2c9fc99ed03ce0017e1daffd3a6bfb92b65d20b14657062c"
+    },
+    {
+      "path": "internal/product/postgres_repository.go",
+      "bytes": 14365,
+      "sha256": "1cf1021385862c8e0381db6e15d6032db09a3b7a96a06cad5957f5a86d8b643d"
+    },
+    {
+      "path": "internal/product/repository.go",
+      "bytes": 7335,
+      "sha256": "1c6b303bbe5602ecb8770777fe9279a11d71fc0b1968232f84819865643615e7"
+    },
+    {
+      "path": "internal/product/service.go",
+      "bytes": 12956,
+      "sha256": "0c175901d271add6ae37a85c0964fbab1deb263e7d465b90c12b674bcdc0988a"
+    },
+    {
+      "path": "internal/product/service_test.go",
+      "bytes": 4785,
+      "sha256": "2a52920ef2b8b8310729cc230baf12dcf5997a9da582afd7c46e08f995cac752"
+    },
+    {
+      "path": "internal/productapi/http.go",
+      "bytes": 10777,
+      "sha256": "f8964de1fe1d8a4b376df8d166cec3bf28538f947e38c43014adc2a570a72bc2"
+    },
+    {
+      "path": "internal/productapi/http_test.go",
+      "bytes": 6855,
+      "sha256": "68a02847b7e26624f098c5679d8600ad2fecea4c57391e5d372ee81c46dee19b"
+    },
+    {
+      "path": "internal/security/signer.go",
+      "bytes": 3041,
+      "sha256": "785f1850ad8453bc1b44801c21bdf7720da4f1ed5f59a3473b64aebbe50642ff"
+    },
+    {
+      "path": "internal/security/signer_test.go",
+      "bytes": 836,
+      "sha256": "139225298c56e8baffd764d48039352b7e68ac366f066b14f9ca1afbc331c549"
+    },
+    {
+      "path": "internal/service/action.go",
+      "bytes": 8135,
+      "sha256": "1bade2d9defced2adf07db97aa99e93d506dd6358f125ea6b458e369d9b3d7e4"
+    },
+    {
+      "path": "internal/service/change.go",
+      "bytes": 4160,
+      "sha256": "94357fcb611878dd0a94e167b6846166126b5a6966814f884f1832d4d1fdb77b"
+    },
+    {
+      "path": "internal/service/clock.go",
+      "bytes": 253,
+      "sha256": "4b8475a884ddbcba3562b16666beb8ccd1fe2623be9c41b42ad47b0c71708f78"
+    },
+    {
+      "path": "internal/service/evidence.go",
+      "bytes": 8644,
+      "sha256": "6554b31a2e27684f06361b20596a4a502633e0476b0efea030338050065d738a"
+    },
+    {
+      "path": "internal/service/policy.go",
+      "bytes": 6328,
+      "sha256": "c293e33c0860d00c9bfa3a503b205c741b1219b7410b817ea1c9581bdb8ad9c2"
+    },
+    {
+      "path": "internal/service/release.go",
+      "bytes": 5356,
+      "sha256": "14809b1339c502d8644cc5b7c6e32053f9cfff4522ca670a3c88a54559190fca"
+    },
+    {
+      "path": "internal/service/service_test.go",
+      "bytes": 13948,
+      "sha256": "4199042c11f58780a8089808dc467026671f04460d09637afeccaf9a1cdfaf02"
+    },
+    {
+      "path": "internal/service/tamper_test.go",
+      "bytes": 1830,
+      "sha256": "ad4523dbbc547c5ad2939dc5d2ae6efd41b8f0aea64000a2f79b30ec40029ecd"
+    },
+    {
+      "path": "internal/store/context.go",
+      "bytes": 522,
+      "sha256": "87a58e96828aa3b6ff02d0b243f5bb67ecd156302c1ecab6055f5ce2be0d47dc"
+    },
+    {
+      "path": "internal/store/file.go",
+      "bytes": 2917,
+      "sha256": "560730c7839b13c167f0e090fb79957aa7ad99c998406746202f25fa2b581d08"
+    },
+    {
+      "path": "internal/store/file_test.go",
+      "bytes": 2355,
+      "sha256": "c3407be7aa15dc8a9c8f0961cfdd4eb018ada41f79ee1529067ad9bc5efd902a"
+    },
+    {
+      "path": "internal/store/memory.go",
+      "bytes": 1254,
+      "sha256": "71cf8d8f7956082cee8804553e336cc7d1a831e8532b905d4bdad9cb8b50ca08"
+    },
+    {
+      "path": "internal/store/postgres.go",
+      "bytes": 16906,
+      "sha256": "02bb9a4c37ce81d55ec9e6d3fa99d8304af06609adf172f2f51cbbba1e9aba35"
+    },
+    {
+      "path": "internal/store/store.go",
+      "bytes": 9975,
+      "sha256": "4b230511bbf8abf9f8076f332c70a533168a8714911577f20d41b7dec9ac6674"
+    },
+    {
+      "path": "internal/telemetry/logger.go",
+      "bytes": 507,
+      "sha256": "500d21a3db39eda366188baf193f960cf3a7f19f51d49994a6e859bf8cd0527b"
+    },
+    {
+      "path": "internal/telemetry/metrics.go",
+      "bytes": 1749,
+      "sha256": "0ff857c7ef54dcc1ac51aa2c04de5f2920e4dcb5d806ad5aa19198e81538e826"
+    },
+    {
+      "path": "internal/telemetry/metrics_test.go",
+      "bytes": 681,
+      "sha256": "ef7dbf0ca27c32fb5f3994faa42cfec4c4c80292e066d189bbde8dbe4ce52275"
+    },
+    {
+      "path": "internal/ui/assets/app.js",
+      "bytes": 4339,
+      "sha256": "d2a0f3f61a03d6c22753aab78fe90289fc866f552ae7f8e0d94b3df862167bca"
+    },
+    {
+      "path": "internal/ui/assets/index.html",
+      "bytes": 2603,
+      "sha256": "40b43492175cfdd8f5c9d5b9e73fb8cfc353e0e1dbfd859d09e9a65e02e9d67e"
+    },
+    {
+      "path": "internal/ui/assets/styles.css",
+      "bytes": 1640,
+      "sha256": "bf65aa348456a998b2165c5bbb35bace6a02132656f60311cb82ce061b196d7f"
+    },
+    {
+      "path": "internal/ui/ui.go",
+      "bytes": 414,
+      "sha256": "5c85f7079c4d3d2cf91780e884f57078195b090b8c09f3a030fca1c83af64e01"
+    },
+    {
+      "path": "internal/ui/ui_test.go",
+      "bytes": 455,
+      "sha256": "1506f164d54a14677a9cbeeb4a7cedc3420e426083211de7f8ff215a0d995277"
+    },
+    {
+      "path": "migrations/0001_postgres.sql",
+      "bytes": 6862,
+      "sha256": "474cee8451372137982c6679b0dbdba1671232b3b63c8c6743c3a19caef22879"
+    },
+    {
+      "path": "migrations/0002_decision_to_production.sql",
+      "bytes": 9155,
+      "sha256": "f975bd5c6484714d53f3bf37aab00a48f70e6f89dac6dc94b83eb715da6d3e93"
+    },
+    {
+      "path": "migrations/0003_postgres_runtime.sql",
+      "bytes": 1429,
+      "sha256": "a941e54dd2a9d3306a2bc9aa5e750886945f2ac61837485b2f8ecd919b9221c2"
+    },
+    {
+      "path": "migrations/0004_webhook_inbox_status.sql",
+      "bytes": 616,
+      "sha256": "c1c4ad58bc8ef1c33e11f49d53adc41cffff73837f3fafaa8f7baa6ad74997a3"
+    },
+    {
+      "path": "migrations/embed.go",
+      "bytes": 264,
+      "sha256": "aa9abe84889cd72a3f7e9979cb06a1c303a35b5a8fc976bbf76e184dae671a19"
+    },
+    {
+      "path": "policies/release.rego",
+      "bytes": 1454,
+      "sha256": "0134b6700d5418b3973a63f3a3d12aafb23ae485d8f9fc5ac7fa91609b60f7e1"
+    },
+    {
+      "path": "schemas/openapi.yaml",
+      "bytes": 11971,
+      "sha256": "72bbc5cd8607860b1ef9a0249666dbaf6c698db2f6d12a3ab25469a9a1d83b06"
+    },
+    {
+      "path": "schemas/v2/agent-event.schema.json",
+      "bytes": 758,
+      "sha256": "796b884ea50f8d161f65a35f85e5e9d4d8984da6fa9273edfb701f0ec4d9f392"
+    },
+    {
+      "path": "schemas/v2/agent-release-manifest.schema.json",
+      "bytes": 1940,
+      "sha256": "1f66dde1adadc7e4131c1cde6300ff8e35389489061339666845993346e26687"
+    },
+    {
+      "path": "schemas/v2/evidence.schema.json",
+      "bytes": 1508,
+      "sha256": "31689fcd8087012a7bd26abb1ed2310955d98a2f1eea061b7ab0d4b0fec4df95"
+    },
+    {
+      "path": "schemas/v2/product-decision.schema.json",
+      "bytes": 2827,
+      "sha256": "7c3256ee33c349969d488664146ec307388c7e44569956953de76da361f0d422"
+    },
+    {
+      "path": "schemas/v2/release-manifest.schema.json",
+      "bytes": 2638,
+      "sha256": "a58cb439c08af0f82e7b0351d594197fa45ce980b5ef9c52b580be1ebc352fc5"
+    },
+    {
+      "path": "scripts/check-docs.sh",
+      "bytes": 714,
+      "sha256": "eb3051b7f014248e3fd061dc32e008ded2afebd0bdca1e9d8dc7db0804a2ddc2"
+    },
+    {
+      "path": "scripts/generate-manifest.go",
+      "bytes": 3744,
+      "sha256": "7c79e7f43730db41b56342bd0a09f9cd44ecb350adcff0d89e1153cbc29fea05"
+    },
+    {
+      "path": "scripts/verify.sh",
+      "bytes": 2367,
+      "sha256": "2ec3cd5ab568e57244438b87f40126e8002359ae9807070e8066b62842b3f655"
+    },
+    {
+      "path": "validation/POSTGRES_K8S_VALIDATION_REPORT.md",
+      "bytes": 4986,
+      "sha256": "26cf518f5335026dda8e523bff3377fc8648da9468a312cc443836af6c2e2be6"
+    },
+    {
+      "path": "validation/VALIDATION_REPORT.md",
+      "bytes": 5054,
+      "sha256": "e3ed69043ca4508bb6fb15aa1b8775b7df0558e36635a7f1c7e826b9ccfb9f06"
+    },
+    {
+      "path": "validation/k8s-e2e-input.md",
+      "bytes": 439,
+      "sha256": "cb4583ffc60b723103d7efb3990e5f0e20bbcd2cd9fc2ce119e06323e92453fb"
+    }
+  ],
+  "product": "DecisionProof V2",
+  "statistics": {
+    "files_excluding_bin": 152,
+    "go_files": 81,
+    "go_lines": 9103,
+    "local_test_coverage": "51.4%",
+    "markdown_files": 28,
+    "markdown_lines": 2313
+  },
+  "truthfulness_status": {
+    "argo_delivery": "NOT_IMPLEMENTED",
+    "kubernetes_agent_runtime": "NOT_IMPLEMENTED",
+    "kubernetes_experimental": "VERIFIED_DOCKER_DESKTOP",
+    "local_engineering_foundation": "VERIFIED",
+    "postgres_runtime": "VERIFIED_SINGLE_NODE",
+    "production_ready": "NO",
+    "real_gitlab_provider": "NOT_RUN",
+    "temporal_workflow": "NOT_IMPLEMENTED"
+  },
+  "version": "2.1.0-postgres-experimental"
+}

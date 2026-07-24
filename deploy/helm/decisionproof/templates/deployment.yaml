@@ -1,0 +1,112 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "decisionproof.fullname" . }}
+  labels:
+    {{- include "decisionproof.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "decisionproof.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "decisionproof.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ include "decisionproof.fullname" . }}
+      automountServiceAccountToken: false
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if and (eq .Values.storage.mode "postgres") .Values.database.migrateOnDeploy }}
+      initContainers:
+        - name: database-migrate
+          image: "{{ .Values.image.repository }}{{- if .Values.image.digest }}@{{ .Values.image.digest }}{{- end }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/migrate"]
+          env:
+            - name: SDLC_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ required "启用迁移时 database.migrationExistingSecret 或 database.existingSecret 不能为空" (default .Values.database.existingSecret .Values.database.migrationExistingSecret) }}
+                  key: {{ .Values.database.urlKey }}
+          securityContext:
+            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+      {{- end }}
+      containers:
+        - name: control-api
+          image: "{{ .Values.image.repository }}{{- if .Values.image.digest }}@{{ .Values.image.digest }}{{- end }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: SDLC_ENV
+              value: production
+            - name: SDLC_LISTEN_ADDR
+              value: :8080
+            - name: SDLC_DATA_FILE
+              value: /var/lib/decisionproof/core.json
+            - name: SDLC_PRODUCT_DATA_FILE
+              value: /var/lib/decisionproof/product.json
+            - name: SDLC_OBJECT_DIR
+              value: /var/lib/decisionproof/objects
+            - name: SDLC_GITLAB_INBOX_FILE
+              value: /var/lib/decisionproof/gitlab-inbox.json
+            {{- if eq .Values.storage.mode "postgres" }}
+            - name: SDLC_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ required "storage.mode=postgres 时 database.existingSecret 不能为空" .Values.database.existingSecret }}
+                  key: {{ .Values.database.urlKey }}
+            {{- end }}
+            - name: SDLC_SIGNING_SEED_B64
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.existingSigningSecret }}
+                  key: seed
+            {{- if .Values.existingGitLabWebhookSecret }}
+            - name: SDLC_GITLAB_TENANT_ID
+              value: {{ required "启用 GitLab Webhook 时 gitlab.tenantID 不能为空" .Values.gitlab.tenantID | quote }}
+            - name: SDLC_GITLAB_INTEGRATION_ID
+              value: {{ .Values.gitlab.integrationID | quote }}
+            - name: SDLC_GITLAB_WEBHOOK_SIGNING_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.existingGitLabWebhookSecret }}
+                  key: signing-secret
+            {{- end }}
+          readinessProbe:
+            httpGet: {path: /readyz, port: http}
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: {path: /healthz, port: http}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          securityContext:
+            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/decisionproof
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: data
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "decisionproof.fullname" . }}-data
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+        - name: tmp
+          emptyDir: {}

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "replicaCount": {"type": "integer", "minimum": 1, "maximum": 1, "description": "当前 FileStore 验证版仅允许单副本"},
+    "image": {
+      "type": "object",
+      "required": ["repository", "digest"],
+      "properties": {
+        "repository": {"type": "string", "minLength": 1},
+        "digest": {"type": "string", "pattern": "^(|sha256:[a-f0-9]{64})$"},
+        "pullPolicy": {"type": "string"}
+      }
+    },
+    "nodeSelector": {
+      "type": "object",
+      "additionalProperties": {"type": "string"}
+    },
+    "storage": {
+      "type": "object",
+      "required": ["mode"],
+      "properties": {
+        "mode": {"type": "string", "enum": ["file", "postgres"]}
+      }
+    },
+    "database": {
+      "type": "object",
+      "required": ["existingSecret", "migrationExistingSecret", "urlKey", "migrateOnDeploy"],
+      "properties": {
+        "existingSecret": {"type": "string"},
+        "migrationExistingSecret": {"type": "string"},
+        "urlKey": {"type": "string", "minLength": 1},
+        "migrateOnDeploy": {"type": "boolean"}
+      }
+    },
+    "gitlab": {
+      "type": "object",
+      "required": ["tenantID", "integrationID"],
+      "properties": {
+        "tenantID": {"type": "string"},
+        "integrationID": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

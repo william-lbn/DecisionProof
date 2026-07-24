@@ -1,0 +1,22 @@
+/bin/
+*.test
+*.out
+*.prof
+.coverage/
+/tmp/
+/data/
+/objects/
+*.log
+.env
+.env.*
+!.env.example
+.DS_Store
+.idea/
+.vscode/
+node_modules/
+
+# 验证报告（Markdown）和可复现输入纳入版本控制；运行日志、覆盖率与随机 ID 输出不提交。
+/validation/*.json
+/validation/*.html
+/validation/*.txt
+/validation/*.tmp

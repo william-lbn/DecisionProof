@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GOTOOLCHAIN: local
+
+jobs:
+  verify:
+    name: Go、文档与 Helm 验证
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: 检出精确提交
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: 安装 Go
+        uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        with:
+          go-version: "1.24.0"
+          cache: true
+
+      - name: 检查格式
+        run: test -z "$(gofmt -l .)"
+
+      - name: 静态检查
+        run: go vet ./...
+
+      - name: 单元与本地集成测试
+        run: go test -p 1 -count=1 ./...
+
+      - name: 数据竞争检查
+        run: go test -p 1 -count=1 -race ./...
+
+      - name: 构建全部命令
+        run: |
+          CGO_ENABLED=0 go build -trimpath ./cmd/control-api
+          CGO_ENABLED=0 go build -trimpath ./cmd/migrate
+          CGO_ENABLED=0 go build -trimpath ./cmd/demo
+          CGO_ENABLED=0 go build -trimpath ./cmd/product-demo
+
+      - name: 文档真实性检查
+        run: ./scripts/check-docs.sh
+
+      - name: 安装 Helm
+        uses: azure/setup-helm@1a275c3b69536ee54be43f2070a358922e12c8d4 # v4.3.1
+
+      - name: Helm Chart 检查
+        run: helm lint deploy/helm/decisionproof

@@ -172,6 +172,14 @@ Gitleaks 8.30.1 扫描约 975 KB 可交付源码，结果 `no leaks found`；`bi
 因此 `PROVIDER_NOT_RUN`，不得把 HTTP Contract 或本地 Kubernetes 验证描述为真实
 GitLab 通过。
 
+本机 Docker Desktop 只有约 9.2 GiB 总内存，且已运行 42 个容器；主机卷当时约有
+27 GiB 可用空间。GitLab 官方单节点基线为 16 GiB，受限环境也要求至少 8 GiB 内存，
+应用节点最低存储约 40 GiB。因此本轮没有强行启动 Omnibus GitLab CE，以免破坏现有
+Kubernetes 和其他用户工作负载。依据：
+
+- <https://docs.gitlab.com/install/requirements/>
+- <https://docs.gitlab.com/omnibus/settings/memory_constrained_envs/>
+
 ## 6. 已知限制
 
 - UI 没有 OIDC Authorization Code + PKCE/BFF，只能在隔离开发身份模式使用；

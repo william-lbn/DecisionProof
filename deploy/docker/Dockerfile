@@ -1,5 +1,5 @@
 # 第一阶段使用完整 Go 镜像完成可重复构建。
-FROM golang:1.23@sha256:60deed95d3888cc5e4d9ff8a10c54e5edc008c6ae3fba6187be6fb592e19e8c0 AS builder
+FROM golang:1.25@sha256:699337d620559a59b4a2bb298ad59611e535d2ee755a34cf2d2a98f37578dc80 AS builder
 WORKDIR /src
 COPY go.mod go.sum ./
 RUN go mod download
